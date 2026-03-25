@@ -299,5 +299,39 @@ console.log('Service Worker gagal (Biasanya karena dibuka via file://)', err);
 });
 }
 </script>
+ let deferredPrompt;
+const installBtn = document.getElementById('installBtn');
+
+// Menangkap event sebelum prompt install muncul otomatis
+window.addEventListener('beforeinstallprompt', (e) => {
+    // Cegah prompt bawaan browser muncul seketika
+    e.preventDefault();
+    // Simpan event agar bisa dipicu nanti saat tombol diklik
+    deferredPrompt = e;
+    // Munculkan tombol install buatan kita
+    installBtn.style.display = 'block';
+});
+
+// Aksi ketika tombol install diklik
+installBtn.addEventListener('click', async () => {
+    if (deferredPrompt) {
+        // Tampilkan prompt install bawaan sistem
+        deferredPrompt.prompt();
+        // Tunggu pilihan user (install atau batal)
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log(`Pilihan user: ${outcome}`);
+        
+        // Kosongkan prompt yang sudah dipakai
+        deferredPrompt = null;
+        // Sembunyikan tombol setelah diklik
+        installBtn.style.display = 'none';
+    }
+});
+
+// Sembunyikan tombol jika aplikasi sukses terinstal
+window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+    console.log('Aplikasi Albirru sukses diinstal');
+}); 
 </body>
 </html>
