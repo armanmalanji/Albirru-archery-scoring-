@@ -453,6 +453,7 @@ const archer = currentArcher; const rambahanIdx = parseInt(document.getElementBy
 const display = document.getElementById('arrowDisplay'); display.innerHTML = '';
 let currentTotal = 0;
 
+// Render warna indikator panah sesuai warna keypad/target
 scores[archer][rambahanIdx].forEach(val => {
 let box = document.createElement('div');
 box.className = 'arrow-box';
@@ -570,11 +571,9 @@ html += `<div class="history-item">
 </div>
 <ul style="margin: 0; padding-left: 20px; padding-top: 10px;">`;
 
-// MENAMPILKAN DETAIL RAMBAHAN DI UI HISTORI
 m.results.forEach((r, rankIdx) => {
 html += `<li style="margin-bottom: 8px;"><strong>#${rankIdx + 1}</strong> ${r.name}: Skor ${r.skor} (X: ${r.x})`;
 
-// Cek apakah data histori menyimpan detail skor (fitur baru)
 if (m.scores && m.scores[r.name]) {
 html += `<div class="history-detail">`;
 m.scores[r.name].forEach((rambahan, rIdx) => {
@@ -616,50 +615,57 @@ if(rCount > maxR) maxR = rCount;
 }
 });
 
+// Perbaikan HTML untuk render di Microsoft Excel: Inline Style + Tinggi Baris Eksplisit + Warna Alternatif
 let html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
 <meta charset="utf-8" />
-<style>
-table { border-collapse: collapse; font-family: Arial, sans-serif; width: 100%; }
-th { background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 12px; text-align: center; white-space: nowrap; }
-td { border: 1px solid #000000; padding: 10px; text-align: center; vertical-align: middle; }
-.rank { font-weight: bold; }
-</style>
 </head>
-<body>
-<table>
-<tr>
-<th>Tanggal</th>
-<th>Kategori</th>
-<th>Jarak</th>
-<th>Peringkat</th>
-<th>Nama Pemanah</th>
-<th>Skor Akhir</th>
-<th>Total X</th>`;
+<body style="font-family: Arial, sans-serif;">
+<table style="border-collapse: collapse; width: 100%;">
+<tr style="height: 45px;">
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Tanggal</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Kategori</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Jarak</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Peringkat</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Nama Pemanah</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Skor Akhir</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Total X</th>`;
 
-for(let i = 1; i <= maxR; i++) { html += `<th>Rambahan ${i}</th>`; }
+for(let i = 1; i <= maxR; i++) {
+html += `<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Rambahan ${i}</th>`;
+}
 html += `</tr>`;
 
-history.forEach(m => {
+history.forEach((m, hIdx) => {
 m.results.forEach((r, idx) => {
+// Memberikan warna latar belakang selang-seling agar elegan dan mudah dibaca (Zebra Striping)
+let bgRow = (hIdx + idx) % 2 === 0 ? '#F9F9F9' : '#FFFFFF';
+let bgRank = '#E1E8ED'; // Biru abu-abu terang untuk sel Peringkat
+let bgScore = '#FFF3CD'; // Kuning terang untuk sel Skor Akhir
+
 html += `
-<tr>
-<td>${m.date}</td>
-<td>${m.category}</td>
-<td>${m.distance}m</td>
-<td class="rank">#${idx + 1}</td>
-<td><b>${r.name}</b></td>
-<td><b>${r.skor}</b></td>
-<td>${r.x}</td>`;
+<tr style="height: 35px;">
+<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${m.date}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${m.category}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${m.distance}m</td>
+<td style="background-color: ${bgRank}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center; font-weight: bold;">#${idx + 1}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center; font-weight: bold;">${r.name}</td>
+<td style="background-color: ${bgScore}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center; font-weight: bold; color: #856404;">${r.skor}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${r.x}</td>`;
 
 for(let i = 0; i < maxR; i++) {
 if (m.scores && m.scores[r.name] && m.scores[r.name][i]) {
 let arrowsStr = m.scores[r.name][i].join(', ');
 let subTotal = m.scores[r.name][i].reduce((sum, val) => sum + calculateScoreValue(val), 0);
-if (arrowsStr.length > 0) { html += `<td>${arrowsStr} <b>(${subTotal})</b></td>`; }
-else { html += `<td>-</td>`; }
-} else { html += `<td>-</td>`; }
+if (arrowsStr.length > 0) {
+html += `<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${arrowsStr} <b>(${subTotal})</b></td>`;
+} else {
+html += `<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">-</td>`;
+}
+} else {
+html += `<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">-</td>`;
+}
 }
 html += `</tr>`;
 });
