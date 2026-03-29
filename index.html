@@ -45,7 +45,7 @@ transition: background-color 0.3s, color 0.3s;
 header {
 background-color: var(--navy-blue);
 color: var(--gold);
-padding: 15px 20px;
+padding: 12px 20px;
 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 display: flex;
 align-items: center;
@@ -53,8 +53,8 @@ justify-content: space-between;
 border-bottom: 2px solid var(--gold);
 }
 
-.header-content { display: flex; align-items: center; flex: 1; }
-.header-logo { height: 90px; width: auto; }
+.header-content { display: flex; align-items: center; flex: 1; gap: 12px; }
+.header-logo { height: 45px; width: auto; object-fit: contain; }
 .header-title {
 font-size: 22px; font-weight: 700; margin: 0;
 text-shadow: 1px 1px 2px rgba(0,0,0,0.5); color: var(--gold); line-height: 1.2;
@@ -69,7 +69,8 @@ border-radius: 8px; cursor: pointer; margin: 0; width: auto; transition: 0.2s;
 .header-controls button:hover { background-color: rgba(212, 175, 55, 0.1); }
 
 @media (max-width: 380px) {
-.header-title { font-size: 18px; }
+.header-logo { height: 35px; }
+.header-title { font-size: 17px; }
 .header-controls button { padding: 5px 8px; font-size: 12px; }
 }
 
@@ -153,6 +154,8 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 
 <header>
 <div class="header-content">
+<!-- PENAMBAHAN LOGO DARI GITHUB -->
+<img src="icon-192.png" alt="Logo Albirru Archery" class="header-logo">
 <h1 class="header-title">Albirru archery</h1>
 </div>
 <div class="header-controls">
@@ -615,7 +618,6 @@ if(rCount > maxR) maxR = rCount;
 }
 });
 
-// Perbaikan HTML untuk render di Microsoft Excel: Inline Style + Tinggi Baris Eksplisit + Warna Alternatif
 let html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
 <head>
@@ -639,10 +641,9 @@ html += `</tr>`;
 
 history.forEach((m, hIdx) => {
 m.results.forEach((r, idx) => {
-// Memberikan warna latar belakang selang-seling agar elegan dan mudah dibaca (Zebra Striping)
 let bgRow = (hIdx + idx) % 2 === 0 ? '#F9F9F9' : '#FFFFFF';
-let bgRank = '#E1E8ED'; // Biru abu-abu terang untuk sel Peringkat
-let bgScore = '#FFF3CD'; // Kuning terang untuk sel Skor Akhir
+let bgRank = '#E1E8ED';
+let bgScore = '#FFF3CD';
 
 html += `
 <tr style="height: 35px;">
