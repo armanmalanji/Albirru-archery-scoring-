@@ -42,7 +42,6 @@ display: flex; flex-direction: column; min-height: 100vh;
 transition: background-color 0.3s, color 0.3s;
 }
 
-/* PERBAIKAN HEADER: Menggunakan Flexbox agar tidak menumpuk */
 header {
 background-color: var(--navy-blue);
 color: var(--gold);
@@ -50,40 +49,25 @@ padding: 15px 20px;
 box-shadow: 0 4px 10px rgba(0,0,0,0.3);
 display: flex;
 align-items: center;
-justify-content: space-between; /* Jarak merata, mencegah tumpang tindih */
+justify-content: space-between;
 border-bottom: 2px solid var(--gold);
 }
 
-.header-content {
-display: flex;
-align-items: center;
-flex: 1; /* Memenuhi sisa ruang */
-}
+.header-content { display: flex; align-items: center; flex: 1; }
 .header-logo { height: 90px; width: auto; }
 .header-title {
-font-size: 22px;
-font-weight: 700;
-margin: 0;
-text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
-color: var(--gold);
-line-height: 1.2;
+font-size: 22px; font-weight: 700; margin: 0;
+text-shadow: 1px 1px 2px rgba(0,0,0,0.5); color: var(--gold); line-height: 1.2;
 }
 
-.header-controls {
-display: flex;
-gap: 8px;
-align-items: center;
-flex-shrink: 0; /* Mencegah tombol mengecil */
-}
+.header-controls { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
 .header-controls button {
 background: transparent; border: 1px solid var(--gold);
 color: var(--gold); font-size: 14px; padding: 5px 10px; font-weight: bold;
-border-radius: 8px; cursor: pointer; margin: 0; width: auto;
-transition: 0.2s;
+border-radius: 8px; cursor: pointer; margin: 0; width: auto; transition: 0.2s;
 }
 .header-controls button:hover { background-color: rgba(212, 175, 55, 0.1); }
 
-/* Responsif untuk layar HP yang sangat kecil */
 @media (max-width: 380px) {
 .header-title { font-size: 18px; }
 .header-controls button { padding: 5px 8px; font-size: 12px; }
@@ -102,6 +86,20 @@ input, select { width: 100%; padding: 12px; margin-top: 8px; border: 1px solid v
 input:focus, select:focus { border-color: var(--navy-blue); box-shadow: 0 0 5px rgba(10, 28, 62, 0.3); outline: none;}
 body.dark-mode input:focus, body.dark-mode select:focus { border-color: var(--gold); box-shadow: 0 0 5px rgba(212, 175, 55, 0.3); }
 
+/* --- STYLE TAB PEMANAH --- */
+.archer-tabs { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 8px; margin-top: 10px; }
+.archer-tabs::-webkit-scrollbar { height: 5px; }
+.archer-tabs::-webkit-scrollbar-thumb { background: var(--input-border); border-radius: 10px; }
+.archer-tab {
+padding: 10px 18px; border: 1px solid var(--input-border); border-radius: 10px;
+background: var(--input-bg); color: var(--text-dark); font-weight: 600;
+white-space: nowrap; cursor: pointer; font-size: 15px; transition: all 0.2s;
+}
+.archer-tab:hover { background: #E1E8ED; }
+body.dark-mode .archer-tab:hover { background: #3A4047; }
+.archer-tab.active { background: var(--navy-blue); color: var(--gold); border-color: var(--navy-blue); box-shadow: 0 4px 8px rgba(10, 28, 62, 0.2); }
+body.dark-mode .archer-tab.active { border-color: var(--gold); }
+
 button.action-btn { background-color: var(--navy-blue); color: white; border: none; padding: 14px; width: 100%; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; transition: background-color 0.2s, transform 0.1s; }
 button.action-btn:hover { background-color: #11306C; }
 button.action-btn:active { opacity: 0.8; transform: scale(0.98); }
@@ -115,14 +113,18 @@ body.dark-mode button.action-btn:hover { background-color: #163B85; }
 .btn-red { background-color: #f44336; color: white; margin-top: 10px;}
 .btn-red:hover { background-color: #d32f2f; }
 
-.keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 20px; }
-.keypad button { border: none; font-weight: 600; cursor: pointer; margin: 0; font-size: 18px; padding: 18px 0; background-color: var(--keypad-btn-bg); color: var(--text-dark); border-radius: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);}
-.keypad button:hover { background-color: #D1D9E0; }
-body.dark-mode .keypad button:hover { background-color: #4A515A; }
-.keypad button.btn-x { background-color: var(--gold); color: #000; }
-.keypad button.btn-x:hover { background-color: #E6C556; }
-.keypad button.btn-m { background-color: #ff4c4c; color: white; }
-.keypad button.btn-m:hover { background-color: #ff6666; }
+/* --- STYLE WARNA TARGET KEYPAD --- */
+.keypad { display: grid; gap: 12px; margin-top: 20px; }
+.keypad button { border: none; font-weight: 700; cursor: pointer; margin: 0; font-size: 20px; padding: 18px 0; border-radius: 10px; box-shadow: 0 3px 6px rgba(0,0,0,0.15); transition: transform 0.1s; }
+.keypad button:active { transform: scale(0.95); }
+
+.btn-target-yellow { background-color: #ffd700 !important; color: #000 !important; }
+.btn-target-red { background-color: #ff4c4c !important; color: #fff !important; }
+.btn-target-blue { background-color: #00bfff !important; color: #000 !important; }
+.btn-target-black { background-color: #222222 !important; color: #fff !important; }
+.btn-target-white { background-color: #ffffff !important; color: #000 !important; border: 1px solid #ccc !important; }
+.btn-target-navy { background-color: var(--navy-blue) !important; color: #fff !important; }
+.btn-target-m { background-color: #555555 !important; color: #fff !important; }
 
 .arrow-display { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; min-height: 40px; padding: 12px; background: rgba(10, 28, 62, 0.05); border-radius: 10px; }
 body.dark-mode .arrow-display { background: rgba(255, 255, 255, 0.05); }
@@ -136,6 +138,11 @@ body.dark-mode .live-total { color: var(--gold); }
 .history-item:last-child { border-bottom: none; }
 .history-date { font-size: 14px; color: #666; margin-bottom: 5px; }
 body.dark-mode .history-date { color: #aaa; }
+
+/* STYLE TAMBAHAN UNTUK DETAIL HISTORI */
+.history-detail { font-size: 13px; color: #555; margin-left: 15px; margin-top: 6px; line-height: 1.5;}
+body.dark-mode .history-detail { color: #bbb; }
+.history-detail span { display: inline-block; margin-right: 12px; }
 
 footer { text-align: center; padding: 20px; background: var(--navy-blue); color: var(--gold); font-size: 14px; font-weight: bold; border-top: 2px solid var(--gold);}
 
@@ -186,7 +193,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <div class="container" id="history-section">
 <div class="card">
 <h3 class="section-title" data-i18n="titleHistory">Histori Pertandingan</h3>
-<button class="action-btn btn-green" onclick="unduhCSV()" style="margin-top: 10px; width: 100%;" data-i18n="btnDownloadCSV">📊 Unduh CSV (Excel)</button>
+<button class="action-btn btn-green" onclick="unduhExcel()" style="margin-top: 10px; width: 100%;" data-i18n="btnDownloadCSV">📊 Unduh Excel (Elegan)</button>
 <div id="historyContent" style="margin-top: 20px;"></div>
 <button class="action-btn" onclick="hideHistory()" style="margin-top: 20px;" data-i18n="btnBackSettings">Kembali ke Pengaturan</button>
 </div>
@@ -197,42 +204,57 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <label data-i18n="labelCatDist">Kategori & Jarak</label>
 <div style="font-size: 18px; font-weight: 600; color: var(--navy-blue);" id="matchInfoDisplay"></div>
 
-<label data-i18n="labelArcher">Pemanah</label>
-<select id="archerSelect" onchange="updateDisplay()"></select>
+<label data-i18n="labelArcher">Pilih Pemanah</label>
+<div id="archerTabs" class="archer-tabs"></div>
+
 <label data-i18n="labelRambahanScoring">Rambahan</label>
 <select id="rambahanSelect" onchange="updateDisplay()"></select>
 
 <div style="display:flex; justify-content:space-between; margin-top:15px; align-items:center;">
 <label style="margin:0;" data-i18n="labelScoreRambahan">Skor Rambahan:</label>
-<button onclick="toggleKeypad()" style="border: none; color: white; cursor: pointer; width:auto; margin:0; padding:6px 12px; font-size:12px; background:#555; border-radius:6px;" data-i18n="btnToggleKeypad">Ganti Mode Keypad</button>
+<button id="keypadToggleBtn" onclick="toggleKeypad()" style="border: none; color: white; cursor: pointer; width:auto; margin:0; padding:6px 12px; font-size:12px; background:#555; border-radius:6px;">Ganti Mode Keypad</button>
 </div>
 
 <div class="arrow-display" id="arrowDisplay"></div>
 <button class="action-btn" onclick="undoScore()" style="background:#ff9800; margin-top:5px; border-radius: 8px;" data-i18n="btnUndo">Hapus (Undo)</button>
 
-<!-- INDIKATOR TOTAL SKOR SEMENTARA -->
 <div class="live-total">
 <span data-i18n="labelTotalScore">Total Skor Sementara:</span> <span id="liveTotalScore">0</span>
 </div>
 
-<div class="keypad" id="keypadStandard">
-<button class="btn-x" onclick="addScore('X')">X</button>
-<button onclick="addScore('10')">10</button>
-<button onclick="addScore('9')">9</button>
-<button onclick="addScore('8')">8</button>
-<button onclick="addScore('7')">7</button>
-<button onclick="addScore('6')">6</button>
-<button onclick="addScore('5')">5</button>
-<button onclick="addScore('4')">4</button>
-<button onclick="addScore('3')">3</button>
-<button onclick="addScore('2')">2</button>
-<button onclick="addScore('1')">1</button>
-<button class="btn-m" onclick="addScore('M')">M</button>
+<!-- KEYPAD 10 RING (Standar) -->
+<div class="keypad" id="keypadStandard" style="grid-template-columns: repeat(3, 1fr);">
+<button class="btn-target-yellow" onclick="addScore('X')">X</button>
+<button class="btn-target-yellow" onclick="addScore('10')">10</button>
+<button class="btn-target-yellow" onclick="addScore('9')">9</button>
+<button class="btn-target-red" onclick="addScore('8')">8</button>
+<button class="btn-target-red" onclick="addScore('7')">7</button>
+<button class="btn-target-blue" onclick="addScore('6')">6</button>
+<button class="btn-target-blue" onclick="addScore('5')">5</button>
+<button class="btn-target-black" onclick="addScore('4')">4</button>
+<button class="btn-target-black" onclick="addScore('3')">3</button>
+<button class="btn-target-white" onclick="addScore('2')">2</button>
+<button class="btn-target-navy" onclick="addScore('1')">1</button>
+<button class="btn-target-m" onclick="addScore('M')">M</button>
 </div>
+
+<!-- KEYPAD 6 RING (X, 10 - 5) -->
+<div class="keypad" id="keypad6Ring" style="display:none; grid-template-columns: repeat(4, 1fr);">
+<button class="btn-target-yellow" onclick="addScore('X')">X</button>
+<button class="btn-target-yellow" onclick="addScore('10')">10</button>
+<button class="btn-target-yellow" onclick="addScore('9')">9</button>
+<button class="btn-target-red" onclick="addScore('8')">8</button>
+<button class="btn-target-red" onclick="addScore('7')">7</button>
+<button class="btn-target-blue" onclick="addScore('6')">6</button>
+<button class="btn-target-blue" onclick="addScore('5')">5</button>
+<button class="btn-target-m" onclick="addScore('M')">M</button>
+</div>
+
+<!-- KEYPAD 2 RING (Simple) -->
 <div class="keypad" id="keypadSimple" style="display:none; grid-template-columns: repeat(3, 1fr);">
-<button onclick="addScore('2')" style="font-size:24px; font-weight:bold;">2</button>
-<button onclick="addScore('1')" style="font-size:24px; font-weight:bold;">1</button>
-<button class="btn-m" onclick="addScore('M')" style="font-size:24px; font-weight:bold;">M</button>
+<button class="btn-target-white" onclick="addScore('2')" style="font-size:24px;">2</button>
+<button class="btn-target-navy" onclick="addScore('1')" style="font-size:24px;">1</button>
+<button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
 
 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--input-border);">
@@ -245,7 +267,6 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <footer data-i18n="footerText">Dibuat oleh Abu Zaid</footer>
 
 <script>
-// --- Kamus Terjemahan ---
 const translations = {
 id: {
 titleSettings: "Pengaturan Pertandingan", labelCategory: "Kategori Panahan", optCategory: "Pilih Kategori",
@@ -253,11 +274,11 @@ labelArchers: "Nama Pemanah (Pisahkan koma)", placeholderArchers: "Contoh: Ali, 
 labelDistance: "Jarak (meter)", placeholderDistance: "Contoh: 20",
 labelRambahan: "Jumlah Rambahan", labelArrows: "Panah per Rambahan (Maks 10)",
 btnStart: "Mulai Skoring", btnViewHistory: "Lihat Histori Pertandingan",
-titleHistory: "Histori Pertandingan", btnDownloadCSV: "📊 Unduh CSV (Excel)", btnBackSettings: "Kembali ke Pengaturan",
-labelCatDist: "Kategori & Jarak", labelArcher: "Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
-btnToggleKeypad: "Ganti Mode Keypad", btnUndo: "Hapus (Undo)", btnShareWA: "📱 Share WhatsApp (Detail)",
+titleHistory: "Histori Pertandingan", btnDownloadCSV: "📊 Unduh Excel (Elegan)", btnBackSettings: "Kembali ke Pengaturan",
+labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
+btnToggleKeypad: "Mode Keypad", btnUndo: "Hapus (Undo)", btnShareWA: "📱 Share WhatsApp (Detail)",
 btnFinishSave: "Selesai & Simpan Histori", btnDelete: "Hapus Tanpa Simpan", footerText: "Dibuat oleh Abu Zaid",
-labelTotalScore: "Total Skor Sementara: ",
+labelTotalScore: "Total Skor Sementara: ", btnShareWAHistory: "📱 Share WA",
 
 alertIncomplete: "Mohon lengkapi semua data!",
 alertFull: "Rambahan penuh! Silakan pindah ke rambahan atau pemanah berikutnya.",
@@ -266,7 +287,6 @@ confirmFinish: "Selesaikan pertandingan dan simpan hasil ke Histori?",
 confirmDelete: "Yakin ingin menghapus pertandingan ini TANPA menyimpan ke histori?",
 historyEmpty: "Belum ada histori pertandingan yang tersimpan.",
 csvNoData: "Belum ada data histori untuk diunduh.",
-csvHeader: "Tanggal,Kategori,Jarak,Peringkat,Nama Pemanah,Skor Akhir,Total X\n",
 
 waTitle: "🏆 *Skoring Albirru PTQ Horseback Archery* 🏆", waDate: "📅 Tanggal:", waCategory: "📁 Kategori:",
 waDistance: "📍 Jarak:", waFinalScore: "*Skor Akhir: ", waLeaderboard: "🏁 *PAPAN PERINGKAT* 🏁", waCreatedBy: "_Dibuat oleh Abu Zaid_"
@@ -277,11 +297,11 @@ labelArchers: "Jeneng Pemanah (Pisahake nganggo koma)", placeholderArchers: "Con
 labelDistance: "Jarak (meter)", placeholderDistance: "Conto: 20",
 labelRambahan: "Cacahe Rambahan", labelArrows: "Panah saben Rambahan (Maks 10)",
 btnStart: "Miwiti Skoring", btnViewHistory: "Ndeleng Histori Pertandhingan",
-titleHistory: "Histori Pertandhingan", btnDownloadCSV: "📊 Undhuh CSV (Excel)", btnBackSettings: "Bali menyang Pangaturan",
-labelCatDist: "Kategori & Jarak", labelArcher: "Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
-btnToggleKeypad: "Ganti Mode Keypad", btnUndo: "Busak (Undo)", btnShareWA: "📱 Bagikake WhatsApp (Detail)",
+titleHistory: "Histori Pertandhingan", btnDownloadCSV: "📊 Undhuh Excel (Elegan)", btnBackSettings: "Bali menyang Pangaturan",
+labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
+btnToggleKeypad: "Mode Keypad", btnUndo: "Busak (Undo)", btnShareWA: "📱 Bagikake WhatsApp (Detail)",
 btnFinishSave: "Rampung & Simpen Histori", btnDelete: "Busak Tanpa Simpen", footerText: "Digawe dening Abu Zaid",
-labelTotalScore: "Gunggung Skor Sauntara: ",
+labelTotalScore: "Gunggung Skor Sauntara: ", btnShareWAHistory: "📱 Bagikake WA",
 
 alertIncomplete: "Tulung jangkepi kabeh data!",
 alertFull: "Rambahan wis kebak! Mangga pindhah menyang rambahan utawa pemanah sabanjure.",
@@ -290,7 +310,6 @@ confirmFinish: "Rampungake pertandhingan banjur simpen asile menyang Histori?",
 confirmDelete: "Yakin arep mbusak pertandhingan iki TANPA disimpen menyang histori?",
 historyEmpty: "Durung ana histori pertandhingan sing disimpen.",
 csvNoData: "Durung ana data histori kanggo diundhuh.",
-csvHeader: "Tanggal,Kategori,Jarak,Peringkat,Jeneng Pemanah,Skor Akhir,Total X\n",
 
 waTitle: "🏆 *Skoring Albirru PTQ Horseback Archery* 🏆", waDate: "📅 Tanggal:", waCategory: "📁 Kategori:",
 waDistance: "📍 Jarak:", waFinalScore: "*Skor Akhir: ", waLeaderboard: "🏁 *PAPAN PERINGKAT* 🏁", waCreatedBy: "_Digawe dening Abu Zaid_"
@@ -298,15 +317,16 @@ waDistance: "📍 Jarak:", waFinalScore: "*Skor Akhir: ", waLeaderboard: "🏁 *
 };
 
 let archers = []; let distance = 0; let maxRambahan = 0; let maxArrows = 0; let scores = {};
-let isSimpleKeypad = false; let selectedCategory = "";
-let currentLang = 'id'; // Bahasa default
+let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring
+let selectedCategory = "";
+let currentArcher = "";
+let currentLang = 'id';
+
 const storageKey = 'albirru_scoring_data_v2';
 const historyKey = 'albirru_match_history';
 
 window.onload = function() {
 if(localStorage.getItem('albirru_theme') === 'dark') { document.body.classList.add('dark-mode'); }
-
-// Load Bahasa
 currentLang = localStorage.getItem('albirru_lang') || 'id';
 applyLanguage();
 
@@ -314,7 +334,9 @@ const savedData = localStorage.getItem(storageKey);
 if (savedData) {
 const data = JSON.parse(savedData);
 archers = data.archers; distance = data.distance; maxRambahan = data.maxRambahan; maxArrows = data.maxArrows; scores = data.scores; selectedCategory = data.selectedCategory;
-setupDropdowns();
+currentArcher = data.currentArcher || archers[0];
+
+setupTabsAndDropdowns();
 document.getElementById('setup-section').style.display = 'none';
 document.getElementById('scoring-section').style.display = 'block';
 updateMatchInfo(); updateDisplay();
@@ -327,35 +349,31 @@ function toggleLanguage() {
 currentLang = currentLang === 'id' ? 'jv' : 'id';
 localStorage.setItem('albirru_lang', currentLang);
 applyLanguage();
-
-// Refresh histori jika sedang dibuka
-if (document.getElementById('history-section').style.display === 'block') {
-showHistory();
-}
+if (document.getElementById('history-section').style.display === 'block') { showHistory(); }
 }
 
 function applyLanguage() {
 const txtData = translations[currentLang];
-
-// Ubah teks yang ada atribut data-i18n
 document.querySelectorAll('[data-i18n]').forEach(el => {
 const key = el.getAttribute('data-i18n');
 if (txtData[key]) el.innerText = txtData[key];
 });
-
-// Ubah placeholder
 document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
 const key = el.getAttribute('data-i18n-placeholder');
 if (txtData[key]) el.placeholder = txtData[key];
 });
+document.getElementById('langBtn').innerText = currentLang === 'id' ? 'Bhs: ID' : 'Basa: JV';
+updateToggleBtnText();
+}
 
-// Update tombol bahasa
-document.getElementById('langBtn').innerText = currentLang === 'id' ? 'ID' : 'JV';
+function updateToggleBtnText() {
+let modeName = keypadMode === 0 ? '10 Ring' : (keypadMode === 1 ? '6 Ring' : '2 Ring');
+document.getElementById('keypadToggleBtn').innerText = translations[currentLang]['btnToggleKeypad'] + ' (' + modeName + ')';
 }
 
 function t(key) { return translations[currentLang][key]; }
 
-function saveData() { localStorage.setItem(storageKey, JSON.stringify({ archers, distance, maxRambahan, maxArrows, scores, selectedCategory })); }
+function saveData() { localStorage.setItem(storageKey, JSON.stringify({ archers, distance, maxRambahan, maxArrows, scores, selectedCategory, currentArcher })); }
 
 function startMatch() {
 const archersStr = document.getElementById('archersInput').value; distance = document.getElementById('distanceInput').value;
@@ -364,23 +382,50 @@ if (!selectedCategory || !archersStr || !distance || !maxRambahan || !maxArrows)
 
 archers = archersStr.split(',').map(a => a.trim()).filter(a => a);
 archers.forEach(archer => { scores[archer] = Array.from({length: maxRambahan}, () => []); });
+currentArcher = archers[0];
 
-setupDropdowns(); document.getElementById('setup-section').style.display = 'none'; document.getElementById('scoring-section').style.display = 'block';
+setupTabsAndDropdowns(); document.getElementById('setup-section').style.display = 'none'; document.getElementById('scoring-section').style.display = 'block';
 saveData(); updateMatchInfo(); updateDisplay();
 }
 
-function setupDropdowns() {
-const archerSelect = document.getElementById('archerSelect'); const rambahanSelect = document.getElementById('rambahanSelect');
-archerSelect.innerHTML = ''; rambahanSelect.innerHTML = '';
-archers.forEach(archer => { let opt = document.createElement('option'); opt.value = archer; opt.text = archer; archerSelect.appendChild(opt); });
+function selectArcher(archerName) {
+currentArcher = archerName;
+saveData();
+renderTabs();
+updateDisplay();
+}
+
+function renderTabs() {
+const tabsContainer = document.getElementById('archerTabs');
+tabsContainer.innerHTML = '';
+archers.forEach(archer => {
+let btn = document.createElement('button');
+btn.className = 'archer-tab' + (archer === currentArcher ? ' active' : '');
+btn.innerText = archer;
+btn.onclick = () => selectArcher(archer);
+tabsContainer.appendChild(btn);
+});
+}
+
+function setupTabsAndDropdowns() {
+renderTabs();
+const rambahanSelect = document.getElementById('rambahanSelect');
+rambahanSelect.innerHTML = '';
 for (let i = 0; i < maxRambahan; i++) { let opt = document.createElement('option'); opt.value = i; opt.text = `Rambahan ${i + 1}`; rambahanSelect.appendChild(opt); }
 }
 
 function updateMatchInfo() { document.getElementById('matchInfoDisplay').innerText = `${selectedCategory} - ${distance}m`; }
-function toggleKeypad() { isSimpleKeypad = !isSimpleKeypad; document.getElementById('keypadStandard').style.display = isSimpleKeypad ? 'none' : 'grid'; document.getElementById('keypadSimple').style.display = isSimpleKeypad ? 'grid' : 'none'; }
+
+function toggleKeypad() {
+keypadMode = (keypadMode + 1) % 3;
+document.getElementById('keypadStandard').style.display = keypadMode === 0 ? 'grid' : 'none';
+document.getElementById('keypad6Ring').style.display = keypadMode === 1 ? 'grid' : 'none';
+document.getElementById('keypadSimple').style.display = keypadMode === 2 ? 'grid' : 'none';
+updateToggleBtnText();
+}
 
 function addScore(val) {
-const archer = document.getElementById('archerSelect').value; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
+const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
 
 if (scores[archer][rambahanIdx].length < maxArrows) {
 scores[archer][rambahanIdx].push(val);
@@ -399,28 +444,35 @@ alert(t('alertFull'));
 }
 
 function undoScore() {
-const archer = document.getElementById('archerSelect').value; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
+const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
 if (scores[archer][rambahanIdx].length > 0) { scores[archer][rambahanIdx].pop(); saveData(); updateDisplay(); }
 }
 
 function updateDisplay() {
-const archer = document.getElementById('archerSelect').value; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
+const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
 const display = document.getElementById('arrowDisplay'); display.innerHTML = '';
-let currentTotal = 0; // Untuk menghitung skor live
+let currentTotal = 0;
 
-// Render panah rambahan berjalan
 scores[archer][rambahanIdx].forEach(val => {
-let box = document.createElement('div'); box.className = 'arrow-box'; box.innerText = val;
-if(val === 'X') { box.style.background = '#ffd700'; } if(val === 'M') { box.style.background = '#ff4c4c'; box.style.color = 'white';}
+let box = document.createElement('div');
+box.className = 'arrow-box';
+box.innerText = val;
+
+if (['X', '10', '9'].includes(val)) { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
+else if (['8', '7'].includes(val)) { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
+else if (['6', '5'].includes(val)) { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
+else if (['4', '3'].includes(val)) { box.style.background = '#222'; box.style.color = '#fff'; box.style.borderColor = '#222'; }
+else if (val === '2') { box.style.background = '#fff'; box.style.color = '#000'; box.style.borderColor = '#999'; }
+else if (val === '1') { box.style.background = 'var(--navy-blue)'; box.style.color = '#fff'; box.style.borderColor = 'var(--navy-blue)'; }
+else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
+
 display.appendChild(box);
 });
 
-// Hitung skor total semua rambahan pemanah ini
 scores[archer].forEach(rambahan => {
 rambahan.forEach(s => { currentTotal += calculateScoreValue(s); });
 });
 
-// Tampilkan live score
 document.getElementById('liveTotalScore').innerText = currentTotal;
 }
 
@@ -455,6 +507,30 @@ text += `\n${t('waCreatedBy')}`;
 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
+function shareWAHistory(index) {
+let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+let m = history[index];
+let text = `${t('waTitle')}\n📍 Boyolali\n${t('waDate')} ${m.date}\n${t('waCategory')} *${m.category}*\n${t('waDistance')} ${m.distance}m\n\n`;
+
+if(m.archers && m.scores) {
+m.archers.forEach(archer => {
+text += `🏹 *${archer}*\n`; let totalArcher = 0;
+m.scores[archer].forEach((rambahan, idx) => {
+if (rambahan.length > 0) {
+let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+text += `R${idx + 1}: ${rambahan.join(', ')} (${subTotal})\n`; totalArcher += subTotal;
+}
+});
+text += `${t('waFinalScore')}${totalArcher}*\n\n`;
+});
+}
+
+text += `${t('waLeaderboard')}\n`;
+m.results.forEach((data, rankIndex) => { text += `#${rankIndex + 1} ${data.name} - ${data.skor} (X: ${data.x})\n`; });
+text += `\n${t('waCreatedBy')}`;
+window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+}
+
 function finishAndSaveMatch() {
 if(confirm(t('confirmFinish'))) {
 let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
@@ -462,6 +538,8 @@ let matchData = {
 date: new Date().toLocaleString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' }),
 category: selectedCategory,
 distance: distance,
+archers: archers,
+scores: scores,
 results: generateReportData()
 };
 history.unshift(matchData);
@@ -481,13 +559,36 @@ let html = '';
 if (history.length === 0) {
 html = `<p style="text-align:center; color: #888;">${t('historyEmpty')}</p>`;
 } else {
-history.forEach(m => {
+history.forEach((m, idx) => {
 html += `<div class="history-item">
+<div style="display:flex; justify-content:space-between; align-items:flex-start;">
+<div>
 <div class="history-date">${m.date}</div>
 <div style="font-weight: bold; margin-bottom: 8px;">${m.category} - ${m.distance}m</div>
-<ul style="margin: 0; padding-left: 20px;">`;
-m.results.forEach((r, idx) => {
-html += `<li><strong>#${idx + 1}</strong> ${r.name}: Skor ${r.skor} (X: ${r.x})</li>`;
+</div>
+<button class="action-btn btn-gold" style="width:auto; margin:0; padding:6px 12px; font-size:12px;" onclick="shareWAHistory(${idx})">${t('btnShareWAHistory')}</button>
+</div>
+<ul style="margin: 0; padding-left: 20px; padding-top: 10px;">`;
+
+// MENAMPILKAN DETAIL RAMBAHAN DI UI HISTORI
+m.results.forEach((r, rankIdx) => {
+html += `<li style="margin-bottom: 8px;"><strong>#${rankIdx + 1}</strong> ${r.name}: Skor ${r.skor} (X: ${r.x})`;
+
+// Cek apakah data histori menyimpan detail skor (fitur baru)
+if (m.scores && m.scores[r.name]) {
+html += `<div class="history-detail">`;
+m.scores[r.name].forEach((rambahan, rIdx) => {
+if (rambahan.length > 0) {
+let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+html += `<span><b>R${rIdx + 1}:</b> ${rambahan.join(', ')} (${subTotal})</span>`;
+}
+});
+html += `</div>`;
+} else {
+html += `<div class="history-detail"><i>(Data detail rambahan versi lawas)</i></div>`;
+}
+
+html += `</li>`;
 });
 html += `</ul></div>`;
 });
@@ -500,28 +601,78 @@ document.getElementById('history-section').style.display = 'none';
 document.getElementById('setup-section').style.display = 'block';
 }
 
-function unduhCSV() {
+function unduhExcel() {
 let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
-if (history.length === 0) {
-alert(t('csvNoData'));
-return;
-}
+if (history.length === 0) { alert(t('csvNoData')); return; }
 
-let csvContent = t('csvHeader');
+let maxR = 0;
+history.forEach(m => {
+if(m.scores) {
+let archerNames = Object.keys(m.scores);
+if(archerNames.length > 0) {
+let rCount = m.scores[archerNames[0]].length;
+if(rCount > maxR) maxR = rCount;
+}
+}
+});
+
+let html = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8" />
+<style>
+table { border-collapse: collapse; font-family: Arial, sans-serif; width: 100%; }
+th { background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 12px; text-align: center; white-space: nowrap; }
+td { border: 1px solid #000000; padding: 10px; text-align: center; vertical-align: middle; }
+.rank { font-weight: bold; }
+</style>
+</head>
+<body>
+<table>
+<tr>
+<th>Tanggal</th>
+<th>Kategori</th>
+<th>Jarak</th>
+<th>Peringkat</th>
+<th>Nama Pemanah</th>
+<th>Skor Akhir</th>
+<th>Total X</th>`;
+
+for(let i = 1; i <= maxR; i++) { html += `<th>Rambahan ${i}</th>`; }
+html += `</tr>`;
+
 history.forEach(m => {
 m.results.forEach((r, idx) => {
-let row = `"${m.date}","${m.category}","${m.distance}m","${idx + 1}","${r.name}","${r.skor}","${r.x}"`;
-csvContent += row + "\n";
+html += `
+<tr>
+<td>${m.date}</td>
+<td>${m.category}</td>
+<td>${m.distance}m</td>
+<td class="rank">#${idx + 1}</td>
+<td><b>${r.name}</b></td>
+<td><b>${r.skor}</b></td>
+<td>${r.x}</td>`;
+
+for(let i = 0; i < maxR; i++) {
+if (m.scores && m.scores[r.name] && m.scores[r.name][i]) {
+let arrowsStr = m.scores[r.name][i].join(', ');
+let subTotal = m.scores[r.name][i].reduce((sum, val) => sum + calculateScoreValue(val), 0);
+if (arrowsStr.length > 0) { html += `<td>${arrowsStr} <b>(${subTotal})</b></td>`; }
+else { html += `<td>-</td>`; }
+} else { html += `<td>-</td>`; }
+}
+html += `</tr>`;
 });
 });
 
-// Menambahkan BOM (\uFEFF) agar Microsoft Excel bisa membaca huruf khusus/spasi dengan normal
-const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+html += `</table></body></html>`;
+
+const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
 const link = document.createElement("a");
 const url = URL.createObjectURL(blob);
 
 link.setAttribute("href", url);
-link.setAttribute("download", "Histori_Albirru_Archery.csv");
+link.setAttribute("download", "Histori_Albirru_Archery.xls");
 link.style.visibility = 'hidden';
 
 document.body.appendChild(link);
