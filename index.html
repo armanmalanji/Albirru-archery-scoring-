@@ -154,7 +154,6 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 
 <header>
 <div class="header-content">
-<!-- PENAMBAHAN LOGO DARI GITHUB -->
 <img src="icon-192.png" alt="Logo Albirru Archery" class="header-logo">
 <h1 class="header-title">Albirru archery</h1>
 </div>
@@ -260,6 +259,14 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
 
+<!-- KEYPAD 3 RING (Baru: 3 Merah, 2 Kuning, 1 Biru Muda) -->
+<div class="keypad" id="keypad3Ring" style="display:none; grid-template-columns: repeat(4, 1fr);">
+<button class="btn-target-red" onclick="addScore('3')" style="font-size:24px;">3</button>
+<button class="btn-target-yellow" onclick="addScore('2')" style="font-size:24px;">2</button>
+<button class="btn-target-blue" onclick="addScore('1')" style="font-size:24px;">1</button>
+<button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
+</div>
+
 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--input-border);">
 <button class="action-btn btn-gold" onclick="shareWhatsApp()" data-i18n="btnShareWA">📱 Share WhatsApp (Detail)</button>
 <button class="action-btn btn-green" onclick="finishAndSaveMatch()" data-i18n="btnFinishSave">Selesai & Simpan Histori</button>
@@ -320,7 +327,7 @@ waDistance: "📍 Jarak:", waFinalScore: "*Skor Akhir: ", waLeaderboard: "🏁 *
 };
 
 let archers = []; let distance = 0; let maxRambahan = 0; let maxArrows = 0; let scores = {};
-let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring
+let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring, 3: 3-Ring
 let selectedCategory = "";
 let currentArcher = "";
 let currentLang = 'id';
@@ -370,7 +377,7 @@ updateToggleBtnText();
 }
 
 function updateToggleBtnText() {
-let modeName = keypadMode === 0 ? '10 Ring' : (keypadMode === 1 ? '6 Ring' : '2 Ring');
+let modeName = keypadMode === 0 ? '10 Ring' : (keypadMode === 1 ? '6 Ring' : (keypadMode === 2 ? '2 Ring' : '3 Ring'));
 document.getElementById('keypadToggleBtn').innerText = translations[currentLang]['btnToggleKeypad'] + ' (' + modeName + ')';
 }
 
@@ -420,11 +427,14 @@ for (let i = 0; i < maxRambahan; i++) { let opt = document.createElement('option
 function updateMatchInfo() { document.getElementById('matchInfoDisplay').innerText = `${selectedCategory} - ${distance}m`; }
 
 function toggleKeypad() {
-keypadMode = (keypadMode + 1) % 3;
+keypadMode = (keypadMode + 1) % 4;
 document.getElementById('keypadStandard').style.display = keypadMode === 0 ? 'grid' : 'none';
 document.getElementById('keypad6Ring').style.display = keypadMode === 1 ? 'grid' : 'none';
 document.getElementById('keypadSimple').style.display = keypadMode === 2 ? 'grid' : 'none';
+document.getElementById('keypad3Ring').style.display = keypadMode === 3 ? 'grid' : 'none';
 updateToggleBtnText();
+// Opsional: memperbarui display seketika jika ingin warnanya menyesuaikan mode yang aktif
+updateDisplay();
 }
 
 function addScore(val) {
@@ -456,12 +466,20 @@ const archer = currentArcher; const rambahanIdx = parseInt(document.getElementBy
 const display = document.getElementById('arrowDisplay'); display.innerHTML = '';
 let currentTotal = 0;
 
-// Render warna indikator panah sesuai warna keypad/target
 scores[archer][rambahanIdx].forEach(val => {
 let box = document.createElement('div');
 box.className = 'arrow-box';
 box.innerText = val;
 
+// Render warna indikator khusus jika sedang di mode 3 Ring
+if (keypadMode === 3) {
+if (val === '3') { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
+else if (val === '2') { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
+else if (val === '1') { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
+else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
+}
+// Render standar untuk mode lainnya
+else {
 if (['X', '10', '9'].includes(val)) { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
 else if (['8', '7'].includes(val)) { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
 else if (['6', '5'].includes(val)) { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
@@ -469,6 +487,7 @@ else if (['4', '3'].includes(val)) { box.style.background = '#222'; box.style.co
 else if (val === '2') { box.style.background = '#fff'; box.style.color = '#000'; box.style.borderColor = '#999'; }
 else if (val === '1') { box.style.background = 'var(--navy-blue)'; box.style.color = '#fff'; box.style.borderColor = 'var(--navy-blue)'; }
 else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
+}
 
 display.appendChild(box);
 });
