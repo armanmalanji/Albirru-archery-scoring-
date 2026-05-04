@@ -121,6 +121,7 @@ body.dark-mode button.action-btn:hover { background-color: #163B85; }
 
 .btn-target-yellow { background-color: #ffd700 !important; color: #000 !important; }
 .btn-target-red { background-color: #ff4c4c !important; color: #fff !important; }
+.btn-target-green { background-color: #4CAF50 !important; color: #fff !important; }
 .btn-target-blue { background-color: #00bfff !important; color: #000 !important; }
 .btn-target-black { background-color: #222222 !important; color: #fff !important; }
 .btn-target-white { background-color: #ffffff !important; color: #000 !important; border: 1px solid #ccc !important; }
@@ -224,7 +225,6 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <span data-i18n="labelTotalScore">Total Skor Sementara:</span> <span id="liveTotalScore">0</span>
 </div>
 
-<!-- KEYPAD 10 RING (Standar) -->
 <div class="keypad" id="keypadStandard" style="grid-template-columns: repeat(3, 1fr);">
 <button class="btn-target-yellow" onclick="addScore('X')">X</button>
 <button class="btn-target-yellow" onclick="addScore('10')">10</button>
@@ -240,7 +240,6 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')">M</button>
 </div>
 
-<!-- KEYPAD 6 RING (X, 10 - 5) -->
 <div class="keypad" id="keypad6Ring" style="display:none; grid-template-columns: repeat(4, 1fr);">
 <button class="btn-target-yellow" onclick="addScore('X')">X</button>
 <button class="btn-target-yellow" onclick="addScore('10')">10</button>
@@ -252,17 +251,26 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')">M</button>
 </div>
 
-<!-- KEYPAD 2 RING (Simple) -->
 <div class="keypad" id="keypadSimple" style="display:none; grid-template-columns: repeat(3, 1fr);">
 <button class="btn-target-white" onclick="addScore('2')" style="font-size:24px;">2</button>
 <button class="btn-target-navy" onclick="addScore('1')" style="font-size:24px;">1</button>
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
 
-<!-- KEYPAD 3 RING (Baru: 3 Merah, 2 Kuning, 1 Biru Muda) -->
 <div class="keypad" id="keypad3Ring" style="display:none; grid-template-columns: repeat(4, 1fr);">
 <button class="btn-target-red" onclick="addScore('3')" style="font-size:24px;">3</button>
 <button class="btn-target-yellow" onclick="addScore('2')" style="font-size:24px;">2</button>
+<button class="btn-target-blue" onclick="addScore('1')" style="font-size:24px;">1</button>
+<button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
+</div>
+
+<div class="keypad" id="keypad6RingColor" style="display:none; grid-template-columns: repeat(4, 1fr);">
+<button class="btn-target-yellow" onclick="addScore('6+')" style="font-size:24px;">6+</button>
+<button class="btn-target-yellow" onclick="addScore('6')" style="font-size:24px;">6</button>
+<button class="btn-target-red" onclick="addScore('5')" style="font-size:24px;">5</button>
+<button class="btn-target-green" onclick="addScore('4')" style="font-size:24px;">4</button>
+<button class="btn-target-white" onclick="addScore('3')" style="font-size:24px;">3</button>
+<button class="btn-target-white" onclick="addScore('2')" style="font-size:24px;">2</button>
 <button class="btn-target-blue" onclick="addScore('1')" style="font-size:24px;">1</button>
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
@@ -327,7 +335,7 @@ waDistance: "📍 Jarak:", waFinalScore: "*Skor Akhir: ", waLeaderboard: "🏁 *
 };
 
 let archers = []; let distance = 0; let maxRambahan = 0; let maxArrows = 0; let scores = {};
-let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring, 3: 3-Ring
+let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring, 3: 3-Ring, 4: 6-Ring Warna
 let selectedCategory = "";
 let currentArcher = "";
 let currentLang = 'id';
@@ -377,7 +385,10 @@ updateToggleBtnText();
 }
 
 function updateToggleBtnText() {
-let modeName = keypadMode === 0 ? '10 Ring' : (keypadMode === 1 ? '6 Ring' : (keypadMode === 2 ? '2 Ring' : '3 Ring'));
+let modeName = keypadMode === 0 ? '10 Ring' :
+(keypadMode === 1 ? '6 Ring (X-5)' :
+(keypadMode === 2 ? '2 Ring' :
+(keypadMode === 3 ? '3 Ring' : '6 Ring (Warna)')));
 document.getElementById('keypadToggleBtn').innerText = translations[currentLang]['btnToggleKeypad'] + ' (' + modeName + ')';
 }
 
@@ -427,13 +438,13 @@ for (let i = 0; i < maxRambahan; i++) { let opt = document.createElement('option
 function updateMatchInfo() { document.getElementById('matchInfoDisplay').innerText = `${selectedCategory} - ${distance}m`; }
 
 function toggleKeypad() {
-keypadMode = (keypadMode + 1) % 4;
+keypadMode = (keypadMode + 1) % 5;
 document.getElementById('keypadStandard').style.display = keypadMode === 0 ? 'grid' : 'none';
 document.getElementById('keypad6Ring').style.display = keypadMode === 1 ? 'grid' : 'none';
 document.getElementById('keypadSimple').style.display = keypadMode === 2 ? 'grid' : 'none';
 document.getElementById('keypad3Ring').style.display = keypadMode === 3 ? 'grid' : 'none';
+document.getElementById('keypad6RingColor').style.display = keypadMode === 4 ? 'grid' : 'none';
 updateToggleBtnText();
-// Opsional: memperbarui display seketika jika ingin warnanya menyesuaikan mode yang aktif
 updateDisplay();
 }
 
@@ -478,6 +489,15 @@ else if (val === '2') { box.style.background = '#ffd700'; box.style.color = '#00
 else if (val === '1') { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
 else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
 }
+// Render warna indikator khusus untuk mode 6 Ring Warna
+else if (keypadMode === 4) {
+if (val === '6+' || val === '6') { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
+else if (val === '5') { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
+else if (val === '4') { box.style.background = '#4CAF50'; box.style.color = '#fff'; box.style.borderColor = '#4CAF50'; }
+else if (val === '3' || val === '2') { box.style.background = '#fff'; box.style.color = '#000'; box.style.borderColor = '#999'; }
+else if (val === '1') { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
+else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
+}
 // Render standar untuk mode lainnya
 else {
 if (['X', '10', '9'].includes(val)) { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
@@ -499,13 +519,18 @@ rambahan.forEach(s => { currentTotal += calculateScoreValue(s); });
 document.getElementById('liveTotalScore').innerText = currentTotal;
 }
 
-function calculateScoreValue(val) { if (val === 'X') return 10; if (val === 'M') return 0; return parseInt(val) || 0; }
+function calculateScoreValue(val) {
+if (val === 'X') return 10;
+if (val === '6+') return 6;
+if (val === 'M') return 0;
+return parseInt(val) || 0;
+}
 
 function generateReportData() {
 let report = [];
 archers.forEach(archer => {
 let totalSkor = 0, totalX = 0;
-scores[archer].forEach(rambahan => { rambahan.forEach(s => { totalSkor += calculateScoreValue(s); if (s === 'X') totalX++; }); });
+scores[archer].forEach(rambahan => { rambahan.forEach(s => { totalSkor += calculateScoreValue(s); if (s === 'X' || s === '6+') totalX++; }); });
 report.push({ name: archer, skor: totalSkor, x: totalX });
 });
 report.sort((a, b) => b.skor - a.skor || b.x - a.x); return report;
