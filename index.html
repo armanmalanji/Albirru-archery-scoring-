@@ -136,6 +136,20 @@ body.dark-mode .arrow-box { background: var(--input-bg); color: var(--text-dark)
 .live-total { text-align: right; font-weight: bold; color: var(--navy-blue); margin-top: 15px; font-size: 16px; }
 body.dark-mode .live-total { color: var(--gold); }
 
+/* --- STYLE LIVE LEADERBOARD (PAPAN SKOR LANGSUNG) --- */
+.live-leaderboard-container { margin-top: 25px; padding: 15px; background: rgba(10, 28, 62, 0.03); border-radius: 10px; border: 1px solid var(--input-border); }
+body.dark-mode .live-leaderboard-container { background: rgba(255, 255, 255, 0.03); border-color: var(--input-border); }
+.live-leaderboard-container h4 { margin-top: 0; margin-bottom: 12px; color: var(--navy-blue); text-align: center; font-size: 16px; }
+body.dark-mode .live-leaderboard-container h4 { color: var(--gold); }
+.live-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed var(--input-border); font-size: 14px; transition: background-color 0.2s; }
+.live-row:last-child { border-bottom: none; }
+.live-row.active-archer { background-color: rgba(212, 175, 55, 0.15); border-radius: 6px; }
+.live-rank { width: 30px; font-weight: bold; color: #666; }
+body.dark-mode .live-rank { color: #aaa; }
+.live-name { font-weight: 600; flex: 1; }
+.live-score-val { font-weight: bold; color: var(--navy-blue); text-align: right; background: rgba(212, 175, 55, 0.3); padding: 3px 10px; border-radius: 12px;}
+body.dark-mode .live-score-val { color: #111; background: var(--gold); }
+
 .history-item { padding: 15px; border-bottom: 1px solid var(--input-border); }
 .history-item:last-child { border-bottom: none; }
 .history-date { font-size: 14px; color: #666; margin-bottom: 5px; }
@@ -225,6 +239,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <span data-i18n="labelTotalScore">Total Skor Sementara:</span> <span id="liveTotalScore">0</span>
 </div>
 
+<!-- KEYPAD 10 RING (Standar) -->
 <div class="keypad" id="keypadStandard" style="grid-template-columns: repeat(3, 1fr);">
 <button class="btn-target-yellow" onclick="addScore('X')">X</button>
 <button class="btn-target-yellow" onclick="addScore('10')">10</button>
@@ -240,6 +255,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')">M</button>
 </div>
 
+<!-- KEYPAD 6 RING (X, 10 - 5) -->
 <div class="keypad" id="keypad6Ring" style="display:none; grid-template-columns: repeat(4, 1fr);">
 <button class="btn-target-yellow" onclick="addScore('X')">X</button>
 <button class="btn-target-yellow" onclick="addScore('10')">10</button>
@@ -251,12 +267,14 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')">M</button>
 </div>
 
+<!-- KEYPAD 2 RING (Simple) -->
 <div class="keypad" id="keypadSimple" style="display:none; grid-template-columns: repeat(3, 1fr);">
 <button class="btn-target-white" onclick="addScore('2')" style="font-size:24px;">2</button>
 <button class="btn-target-navy" onclick="addScore('1')" style="font-size:24px;">1</button>
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
 
+<!-- KEYPAD 3 RING (3 Merah, 2 Kuning, 1 Biru Muda) -->
 <div class="keypad" id="keypad3Ring" style="display:none; grid-template-columns: repeat(4, 1fr);">
 <button class="btn-target-red" onclick="addScore('3')" style="font-size:24px;">3</button>
 <button class="btn-target-yellow" onclick="addScore('2')" style="font-size:24px;">2</button>
@@ -264,6 +282,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
 
+<!-- KEYPAD 6 RING CUSTOM (Baru: 6+, 6 Kuning, 5 Merah, 4 Hijau, 3 Putih, 2 Putih, 1 Biru Muda) -->
 <div class="keypad" id="keypad6RingColor" style="display:none; grid-template-columns: repeat(4, 1fr);">
 <button class="btn-target-yellow" onclick="addScore('6+')" style="font-size:24px;">6+</button>
 <button class="btn-target-yellow" onclick="addScore('6')" style="font-size:24px;">6</button>
@@ -273,6 +292,12 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-white" onclick="addScore('2')" style="font-size:24px;">2</button>
 <button class="btn-target-blue" onclick="addScore('1')" style="font-size:24px;">1</button>
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
+</div>
+
+<!-- LIVE LEADERBOARD (Papan Skor Langsung) -->
+<div class="live-leaderboard-container">
+<h4 data-i18n="titleLiveScore">🏆 Papan Skor Langsung (Live)</h4>
+<div id="liveLeaderboardContent"></div>
 </div>
 
 <hr style="margin: 20px 0; border: 0; border-top: 1px solid var(--input-border);">
@@ -297,6 +322,7 @@ labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanSco
 btnToggleKeypad: "Mode Keypad", btnUndo: "Hapus (Undo)", btnShareWA: "📱 Share WhatsApp (Detail)",
 btnFinishSave: "Selesai & Simpan Histori", btnDelete: "Hapus Tanpa Simpan", footerText: "Dibuat oleh Abu Zaid",
 labelTotalScore: "Total Skor Sementara: ", btnShareWAHistory: "📱 Share WA",
+titleLiveScore: "🏆 Papan Skor Langsung (Live)",
 
 alertIncomplete: "Mohon lengkapi semua data!",
 alertFull: "Rambahan penuh! Silakan pindah ke rambahan atau pemanah berikutnya.",
@@ -320,6 +346,7 @@ labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanSco
 btnToggleKeypad: "Mode Keypad", btnUndo: "Busak (Undo)", btnShareWA: "📱 Bagikake WhatsApp (Detail)",
 btnFinishSave: "Rampung & Simpen Histori", btnDelete: "Busak Tanpa Simpen", footerText: "Digawe dening Abu Zaid",
 labelTotalScore: "Gunggung Skor Sauntara: ", btnShareWAHistory: "📱 Bagikake WA",
+titleLiveScore: "🏆 Papan Skor Langsung (Live)",
 
 alertIncomplete: "Tulung jangkepi kabeh data!",
 alertFull: "Rambahan wis kebak! Mangga pindhah menyang rambahan utawa pemanah sabanjure.",
@@ -517,6 +544,32 @@ rambahan.forEach(s => { currentTotal += calculateScoreValue(s); });
 });
 
 document.getElementById('liveTotalScore').innerText = currentTotal;
+
+// Panggil fungsi update Live Leaderboard
+updateLiveLeaderboard();
+}
+
+// Fungsi Papan Skor Langsung (Update secara Real-time)
+function updateLiveLeaderboard() {
+const container = document.getElementById('liveLeaderboardContent');
+if (!container) return;
+
+const rankData = generateReportData();
+let html = '';
+
+rankData.forEach((data, index) => {
+// Beri highlight pemanah yang sedang aktif dengan kelas 'active-archer'
+let activeClass = (data.name === currentArcher) ? 'active-archer' : '';
+
+html += `
+<div class="live-row ${activeClass}">
+<div class="live-rank">#${index + 1}</div>
+<div class="live-name">${data.name}</div>
+<div class="live-score-val">${data.skor} <span style="font-size:11px; font-weight:normal;">(X:${data.x})</span></div>
+</div>`;
+});
+
+container.innerHTML = html;
 }
 
 function calculateScoreValue(val) {
