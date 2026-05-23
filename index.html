@@ -141,14 +141,26 @@ body.dark-mode .live-total { color: var(--gold); }
 body.dark-mode .live-leaderboard-container { background: rgba(255, 255, 255, 0.03); border-color: var(--input-border); }
 .live-leaderboard-container h4 { margin-top: 0; margin-bottom: 12px; color: var(--navy-blue); text-align: center; font-size: 16px; }
 body.dark-mode .live-leaderboard-container h4 { color: var(--gold); }
-.live-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; border-bottom: 1px dashed var(--input-border); font-size: 14px; transition: background-color 0.2s; }
-.live-row:last-child { border-bottom: none; }
-.live-row.active-archer { background-color: rgba(212, 175, 55, 0.15); border-radius: 6px; }
+
+.live-item-wrapper { border-bottom: 1px dashed var(--input-border); }
+.live-item-wrapper:last-child { border-bottom: none; }
+.live-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; font-size: 14px; transition: background-color 0.2s; cursor: pointer; border-radius: 6px;}
+.live-row:hover { background-color: rgba(0,0,0,0.05); }
+body.dark-mode .live-row:hover { background-color: rgba(255,255,255,0.05); }
+.live-row.active-archer { background-color: rgba(212, 175, 55, 0.15); }
 .live-rank { width: 30px; font-weight: bold; color: #666; }
 body.dark-mode .live-rank { color: #aaa; }
-.live-name { font-weight: 600; flex: 1; }
+.live-name { font-weight: 600; flex: 1; display: flex; align-items: center; gap: 8px;}
 .live-score-val { font-weight: bold; color: var(--navy-blue); text-align: right; background: rgba(212, 175, 55, 0.3); padding: 3px 10px; border-radius: 12px;}
 body.dark-mode .live-score-val { color: #111; background: var(--gold); }
+
+/* Detail Rambahan di Live Score */
+.live-detail-container { display: none; padding: 5px 10px 15px 40px; font-size: 13px; color: #555; }
+body.dark-mode .live-detail-container { color: #bbb; }
+.live-detail-container.show { display: block; animation: fadeIn 0.2s ease-in-out; }
+.live-rambahan-item { display: flex; justify-content: space-between; margin-bottom: 6px; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
 .history-item { padding: 15px; border-bottom: 1px solid var(--input-border); }
 .history-item:last-child { border-bottom: none; }
@@ -296,7 +308,10 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 
 <!-- LIVE LEADERBOARD (Papan Skor Langsung) -->
 <div class="live-leaderboard-container">
-<h4 data-i18n="titleLiveScore">🏆 Papan Skor Langsung (Live)</h4>
+<h4 data-i18n="titleLiveScore" style="margin-bottom: 15px;">🏆 Papan Skor Langsung (Live)</h4>
+<div style="font-size: 11px; text-align: center; color: #888; margin-top: -10px; margin-bottom: 10px;">
+(Klik nama pemanah untuk melihat detail)
+</div>
 <div id="liveLeaderboardContent"></div>
 </div>
 
@@ -366,6 +381,7 @@ let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring, 3: 3-Ring, 4: 6-Ri
 let selectedCategory = "";
 let currentArcher = "";
 let currentLang = 'id';
+let expandedLiveArchers = new Set(); // Menyimpan state pemanah mana saja yang detailnya sedang terbuka
 
 const storageKey = 'albirru_scoring_data_v2';
 const historyKey = 'albirru_match_history';
@@ -431,6 +447,7 @@ if (!selectedCategory || !archersStr || !distance || !maxRambahan || !maxArrows)
 archers = archersStr.split(',').map(a => a.trim()).filter(a => a);
 archers.forEach(archer => { scores[archer] = Array.from({length: maxRambahan}, () => []); });
 currentArcher = archers[0];
+expandedLiveArchers.clear(); // Reset state expanded
 
 setupTabsAndDropdowns(); document.getElementById('setup-section').style.display = 'none'; document.getElementById('scoring-section').style.display = 'block';
 saveData(); updateMatchInfo(); updateDisplay();
@@ -549,29 +566,6 @@ document.getElementById('liveTotalScore').innerText = currentTotal;
 updateLiveLeaderboard();
 }
 
-// Fungsi Papan Skor Langsung (Update secara Real-time)
-function updateLiveLeaderboard() {
-const container = document.getElementById('liveLeaderboardContent');
-if (!container) return;
-
-const rankData = generateReportData();
-let html = '';
-
-rankData.forEach((data, index) => {
-// Beri highlight pemanah yang sedang aktif dengan kelas 'active-archer'
-let activeClass = (data.name === currentArcher) ? 'active-archer' : '';
-
-html += `
-<div class="live-row ${activeClass}">
-<div class="live-rank">#${index + 1}</div>
-<div class="live-name">${data.name}</div>
-<div class="live-score-val">${data.skor} <span style="font-size:11px; font-weight:normal;">(X:${data.x})</span></div>
-</div>`;
-});
-
-container.innerHTML = html;
-}
-
 function calculateScoreValue(val) {
 if (val === 'X') return 10;
 if (val === '6+') return 6;
@@ -587,6 +581,70 @@ scores[archer].forEach(rambahan => { rambahan.forEach(s => { totalSkor += calcul
 report.push({ name: archer, skor: totalSkor, x: totalX });
 });
 report.sort((a, b) => b.skor - a.skor || b.x - a.x); return report;
+}
+
+// FUNGSI UNTUK TOGGLE DETAIL LIVE SCORE
+function toggleLiveDetail(archerName) {
+if(expandedLiveArchers.has(archerName)) {
+expandedLiveArchers.delete(archerName);
+} else {
+expandedLiveArchers.add(archerName);
+}
+updateLiveLeaderboard();
+}
+
+// Fungsi Papan Skor Langsung (Update secara Real-time)
+function updateLiveLeaderboard() {
+const container = document.getElementById('liveLeaderboardContent');
+if (!container) return;
+
+const rankData = generateReportData();
+let html = '';
+
+rankData.forEach((data, index) => {
+let activeClass = (data.name === currentArcher) ? 'active-archer' : '';
+let isExpanded = expandedLiveArchers.has(data.name);
+
+html += `<div class="live-item-wrapper">`;
+
+// Baris Utama
+html += `
+<div class="live-row ${activeClass}" onclick="toggleLiveDetail('${data.name}')">
+<div class="live-rank">#${index + 1}</div>
+<div class="live-name">
+${data.name}
+<span style="font-size:10px; color:#999;">${isExpanded ? '▲' : '▼'}</span>
+</div>
+<div class="live-score-val">${data.skor} <span style="font-size:11px; font-weight:normal;">(X:${data.x})</span></div>
+</div>`;
+
+// Detail Container (Terbuka/Tertutup sesuai state)
+html += `<div class="live-detail-container ${isExpanded ? 'show' : ''}">`;
+
+let hasData = false;
+if (scores[data.name]) {
+scores[data.name].forEach((rambahan, rIdx) => {
+if (rambahan.length > 0) {
+hasData = true;
+let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+html += `
+<div class="live-rambahan-item">
+<span><b>R${rIdx + 1}:</b> ${rambahan.join(', ')}</span>
+<span><b>${subTotal}</b></span>
+</div>`;
+}
+});
+}
+
+if (!hasData) {
+html += `<div style="text-align:center; color:#999; font-style:italic;">Belum ada tembakan</div>`;
+}
+
+html += `</div>`; // End Detail Container
+html += `</div>`; // End Wrapper
+});
+
+container.innerHTML = html;
 }
 
 function shareWhatsApp() {
