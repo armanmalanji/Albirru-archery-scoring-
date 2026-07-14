@@ -128,10 +128,15 @@ body.dark-mode button.action-btn:hover { background-color: #163B85; }
 .btn-target-navy { background-color: var(--navy-blue) !important; color: #fff !important; }
 .btn-target-m { background-color: #555555 !important; color: #fff !important; }
 
+/* --- STYLE KOTAK ARROW --- */
 .arrow-display { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; min-height: 40px; padding: 12px; background: rgba(10, 28, 62, 0.05); border-radius: 10px; }
 body.dark-mode .arrow-display { background: rgba(255, 255, 255, 0.05); }
-.arrow-box { background: white; border: 1px solid var(--input-border); width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; font-weight: 700; border-radius: 8px; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-body.dark-mode .arrow-box { background: var(--input-bg); color: var(--text-dark); border-color: var(--input-border);}
+
+.arrow-box { position: relative; background: var(--input-bg); border: 2px solid var(--input-border); width: 44px; height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; border-radius: 8px; color: var(--text-dark); cursor: pointer; transition: all 0.1s ease-in-out; }
+.arrow-box.selected { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); transform: scale(1.08); background-color: rgba(212, 175, 55, 0.1); }
+.arrow-label { position: absolute; top: 2px; left: 4px; font-size: 10px; color: #888; font-weight: 600; line-height: 1; }
+body.dark-mode .arrow-label { color: #aaa; }
+.arrow-val { margin-top: 6px; font-size: 16px; }
 
 .live-total { text-align: right; font-weight: bold; color: var(--navy-blue); margin-top: 15px; font-size: 16px; }
 body.dark-mode .live-total { color: var(--gold); }
@@ -160,6 +165,31 @@ body.dark-mode .live-detail-container { color: #bbb; }
 .live-detail-container.show { display: block; animation: fadeIn 0.2s ease-in-out; }
 .live-rambahan-item { display: flex; justify-content: space-between; margin-bottom: 6px; }
 
+/* --- STYLE PERINGKAT ARROW TERBAIK --- */
+.perf-title { font-weight: 700; font-size: 13px; margin-bottom: 8px; color: var(--navy-blue); }
+body.dark-mode .perf-title { color: var(--gold); }
+
+.perf-rank-1 {
+    font-size: 16px; 
+    font-weight: 900; 
+    color: var(--navy-blue); 
+    margin-bottom: 6px; 
+    background: rgba(212, 175, 55, 0.25); 
+    padding: 6px 10px; 
+    border-radius: 8px; 
+    display: inline-block;
+    border-left: 4px solid var(--gold);
+}
+body.dark-mode .perf-rank-1 { color: #fff; background: rgba(212, 175, 55, 0.3); }
+
+.perf-rank-other { 
+    font-size: 12px; 
+    color: #666; 
+    margin-bottom: 4px; 
+    padding-left: 10px; 
+}
+body.dark-mode .perf-rank-other { color: #aaa; }
+
 @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
 .history-item { padding: 15px; border-bottom: 1px solid var(--input-border); }
@@ -167,7 +197,6 @@ body.dark-mode .live-detail-container { color: #bbb; }
 .history-date { font-size: 14px; color: #666; margin-bottom: 5px; }
 body.dark-mode .history-date { color: #aaa; }
 
-/* STYLE TAMBAHAN UNTUK DETAIL HISTORI */
 .history-detail { font-size: 13px; color: #555; margin-left: 15px; margin-top: 6px; line-height: 1.5;}
 body.dark-mode .history-detail { color: #bbb; }
 .history-detail span { display: inline-block; margin-right: 12px; }
@@ -181,7 +210,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 
 <header>
 <div class="header-content">
-<img src="icon-192.png" alt="Logo Albirru Archery" class="header-logo">
+<img src="icon-192.png" alt="Logo Albirru Archery" class="header-logo" onerror="this.style.display='none'">
 <h1 class="header-title">Albirru archery</h1>
 </div>
 <div class="header-controls">
@@ -212,8 +241,13 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <input type="number" id="distanceInput" data-i18n-placeholder="placeholderDistance" placeholder="Contoh: 20">
 <label data-i18n="labelRambahan">Jumlah Rambahan</label>
 <input type="number" id="rambahanInput" value="6" min="1">
-<label data-i18n="labelArrows">Panah per Rambahan (Maks 10)</label>
+
+<!-- FITUR NOMOR ARROW -->
+<label data-i18n="labelArrowNumbers">Nomor Arrow (Opsional, pisahkan koma)</label>
+<input type="text" id="arrowNumbersInput" data-i18n-placeholder="placeholderArrowNumbers" placeholder="Contoh: 1,3,5,6,7">
+<label data-i18n="labelArrows" style="font-size: 13px; margin-top: 5px; font-weight: normal; color: #888;">Atau jumlah panah per rambahan (Maks 10):</label>
 <input type="number" id="arrowsInput" value="3" min="1" max="10">
+
 <button class="action-btn" onclick="startMatch()" data-i18n="btnStart">Mulai Skoring</button>
 <button class="action-btn btn-gold" onclick="showHistory()" style="margin-top: 15px;" data-i18n="btnViewHistory">Lihat Histori Pertandingan</button>
 </div>
@@ -237,13 +271,14 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <div id="archerTabs" class="archer-tabs"></div>
 
 <label data-i18n="labelRambahanScoring">Rambahan</label>
-<select id="rambahanSelect" onchange="updateDisplay()"></select>
+<select id="rambahanSelect" onchange="resetArrowIndex(); updateDisplay()"></select>
 
 <div style="display:flex; justify-content:space-between; margin-top:15px; align-items:center;">
 <label style="margin:0;" data-i18n="labelScoreRambahan">Skor Rambahan:</label>
 <button id="keypadToggleBtn" onclick="toggleKeypad()" style="border: none; color: white; cursor: pointer; width:auto; margin:0; padding:6px 12px; font-size:12px; background:#555; border-radius:6px;">Ganti Mode Keypad</button>
 </div>
 
+<div style="font-size: 11px; color: #888; margin-top: 5px;">(Pilih kotak arrow di bawah untuk mengisi poin)</div>
 <div class="arrow-display" id="arrowDisplay"></div>
 <button class="action-btn" onclick="undoScore()" style="background:#ff9800; margin-top:5px; border-radius: 8px;" data-i18n="btnUndo">Hapus (Undo)</button>
 
@@ -294,7 +329,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <button class="btn-target-m" onclick="addScore('M')" style="font-size:24px;">M</button>
 </div>
 
-<!-- KEYPAD 6 RING CUSTOM (Baru: 6+, 6 Kuning, 5 Merah, 4 Hijau, 3 Putih, 2 Putih, 1 Biru Muda) -->
+<!-- KEYPAD 6 RING CUSTOM -->
 <div class="keypad" id="keypad6RingColor" style="display:none; grid-template-columns: repeat(4, 1fr);">
 <button class="btn-target-yellow" onclick="addScore('6+')" style="font-size:24px;">6+</button>
 <button class="btn-target-yellow" onclick="addScore('6')" style="font-size:24px;">6</button>
@@ -310,7 +345,7 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <div class="live-leaderboard-container">
 <h4 data-i18n="titleLiveScore" style="margin-bottom: 15px;">🏆 Papan Skor Langsung (Live)</h4>
 <div style="font-size: 11px; text-align: center; color: #888; margin-top: -10px; margin-bottom: 10px;">
-(Klik nama pemanah untuk melihat detail)
+(Klik nama pemanah untuk melihat detail performa arrow)
 </div>
 <div id="liveLeaderboardContent"></div>
 </div>
@@ -330,7 +365,8 @@ id: {
 titleSettings: "Pengaturan Pertandingan", labelCategory: "Kategori Panahan", optCategory: "Pilih Kategori",
 labelArchers: "Nama Pemanah (Pisahkan koma)", placeholderArchers: "Contoh: Ali, Umar",
 labelDistance: "Jarak (meter)", placeholderDistance: "Contoh: 20",
-labelRambahan: "Jumlah Rambahan", labelArrows: "Panah per Rambahan (Maks 10)",
+labelRambahan: "Jumlah Rambahan", labelArrows: "Atau jumlah panah per rambahan (Maks 10):",
+labelArrowNumbers: "Nomor Arrow (Opsional, pisahkan koma)", placeholderArrowNumbers: "Contoh: 1,3,5,6,7",
 btnStart: "Mulai Skoring", btnViewHistory: "Lihat Histori Pertandingan",
 titleHistory: "Histori Pertandingan", btnDownloadCSV: "📊 Unduh Excel (Elegan)", btnBackSettings: "Kembali ke Pengaturan",
 labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
@@ -340,7 +376,7 @@ labelTotalScore: "Total Skor Sementara: ", btnShareWAHistory: "📱 Share WA",
 titleLiveScore: "🏆 Papan Skor Langsung (Live)",
 
 alertIncomplete: "Mohon lengkapi semua data!",
-alertFull: "Rambahan penuh! Silakan pindah ke rambahan atau pemanah berikutnya.",
+alertFull: "Semua arrow di rambahan ini sudah terisi!",
 alertNoticeFull: "Pemberitahuan: Rambahan {r} untuk {a} sudah terisi penuh!",
 confirmFinish: "Selesaikan pertandingan dan simpan hasil ke Histori?",
 confirmDelete: "Yakin ingin menghapus pertandingan ini TANPA menyimpan ke histori?",
@@ -354,7 +390,8 @@ jv: {
 titleSettings: "Pangaturan Pertandhingan", labelCategory: "Kategori Panahan", optCategory: "Pilih Kategori",
 labelArchers: "Jeneng Pemanah (Pisahake nganggo koma)", placeholderArchers: "Conto: Ali, Umar",
 labelDistance: "Jarak (meter)", placeholderDistance: "Conto: 20",
-labelRambahan: "Cacahe Rambahan", labelArrows: "Panah saben Rambahan (Maks 10)",
+labelRambahan: "Cacahe Rambahan", labelArrows: "Utawa cacahe panah saben rambahan (Maks 10):",
+labelArrowNumbers: "Nomor Arrow (Opsional, pisahake koma)", placeholderArrowNumbers: "Conto: 1,3,5,6,7",
 btnStart: "Miwiti Skoring", btnViewHistory: "Ndeleng Histori Pertandhingan",
 titleHistory: "Histori Pertandhingan", btnDownloadCSV: "📊 Undhuh Excel (Elegan)", btnBackSettings: "Bali menyang Pangaturan",
 labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
@@ -364,7 +401,7 @@ labelTotalScore: "Gunggung Skor Sauntara: ", btnShareWAHistory: "📱 Bagikake W
 titleLiveScore: "🏆 Papan Skor Langsung (Live)",
 
 alertIncomplete: "Tulung jangkepi kabeh data!",
-alertFull: "Rambahan wis kebak! Mangga pindhah menyang rambahan utawa pemanah sabanjure.",
+alertFull: "Kabeh arrow ing rambahan iki wis kebak!",
 alertNoticeFull: "Pewara: Rambahan {r} kanggo {a} wis kebak!",
 confirmFinish: "Rampungake pertandhingan banjur simpen asile menyang Histori?",
 confirmDelete: "Yakin arep mbusak pertandhingan iki TANPA disimpen menyang histori?",
@@ -377,13 +414,16 @@ waDistance: "📍 Jarak:", waFinalScore: "*Skor Akhir: ", waLeaderboard: "🏁 *
 };
 
 let archers = []; let distance = 0; let maxRambahan = 0; let maxArrows = 0; let scores = {};
-let keypadMode = 0; // 0: Standard(10), 1: 6-Ring, 2: 2-Ring, 3: 3-Ring, 4: 6-Ring Warna
+let keypadMode = 0;
 let selectedCategory = "";
 let currentArcher = "";
 let currentLang = 'id';
-let expandedLiveArchers = new Set(); // Menyimpan state pemanah mana saja yang detailnya sedang terbuka
+let expandedLiveArchers = new Set(); 
 
-const storageKey = 'albirru_scoring_data_v2';
+let arrowSequence = []; 
+let currentArrowIndex = 0; 
+
+const storageKey = 'albirru_scoring_data_v3'; 
 const historyKey = 'albirru_match_history';
 
 window.onload = function() {
@@ -396,6 +436,8 @@ if (savedData) {
 const data = JSON.parse(savedData);
 archers = data.archers; distance = data.distance; maxRambahan = data.maxRambahan; maxArrows = data.maxArrows; scores = data.scores; selectedCategory = data.selectedCategory;
 currentArcher = data.currentArcher || archers[0];
+arrowSequence = data.arrowSequence || Array.from({length: maxArrows}, (_, i) => (i + 1).toString());
+currentArrowIndex = data.currentArrowIndex || 0;
 
 setupTabsAndDropdowns();
 document.getElementById('setup-section').style.display = 'none';
@@ -437,17 +479,36 @@ document.getElementById('keypadToggleBtn').innerText = translations[currentLang]
 
 function t(key) { return translations[currentLang][key]; }
 
-function saveData() { localStorage.setItem(storageKey, JSON.stringify({ archers, distance, maxRambahan, maxArrows, scores, selectedCategory, currentArcher })); }
+function saveData() { 
+localStorage.setItem(storageKey, JSON.stringify({ 
+archers, distance, maxRambahan, maxArrows, scores, selectedCategory, currentArcher, arrowSequence, currentArrowIndex 
+})); 
+}
 
 function startMatch() {
 const archersStr = document.getElementById('archersInput').value; distance = document.getElementById('distanceInput').value;
-maxRambahan = parseInt(document.getElementById('rambahanInput').value); maxArrows = parseInt(document.getElementById('arrowsInput').value); selectedCategory = document.getElementById('categoryInput').value;
-if (!selectedCategory || !archersStr || !distance || !maxRambahan || !maxArrows) { alert(t('alertIncomplete')); return; }
+maxRambahan = parseInt(document.getElementById('rambahanInput').value); selectedCategory = document.getElementById('categoryInput').value;
+const customArrowStr = document.getElementById('arrowNumbersInput').value.trim();
+
+if (!selectedCategory || !archersStr || !distance || !maxRambahan) { alert(t('alertIncomplete')); return; }
+
+if (customArrowStr) {
+arrowSequence = customArrowStr.split(',').map(s => s.trim()).filter(s => s);
+maxArrows = arrowSequence.length;
+} else {
+maxArrows = parseInt(document.getElementById('arrowsInput').value);
+if (!maxArrows) { alert(t('alertIncomplete')); return; }
+arrowSequence = Array.from({length: maxArrows}, (_, i) => (i + 1).toString());
+}
 
 archers = archersStr.split(',').map(a => a.trim()).filter(a => a);
-archers.forEach(archer => { scores[archer] = Array.from({length: maxRambahan}, () => []); });
+archers.forEach(archer => { 
+scores[archer] = Array.from({length: maxRambahan}, () => new Array(maxArrows).fill(null)); 
+});
+
 currentArcher = archers[0];
-expandedLiveArchers.clear(); // Reset state expanded
+currentArrowIndex = 0;
+expandedLiveArchers.clear(); 
 
 setupTabsAndDropdowns(); document.getElementById('setup-section').style.display = 'none'; document.getElementById('scoring-section').style.display = 'block';
 saveData(); updateMatchInfo(); updateDisplay();
@@ -455,9 +516,8 @@ saveData(); updateMatchInfo(); updateDisplay();
 
 function selectArcher(archerName) {
 currentArcher = archerName;
-saveData();
-renderTabs();
-updateDisplay();
+resetArrowIndex();
+saveData(); renderTabs(); updateDisplay();
 }
 
 function renderTabs() {
@@ -488,52 +548,80 @@ document.getElementById('keypad6Ring').style.display = keypadMode === 1 ? 'grid'
 document.getElementById('keypadSimple').style.display = keypadMode === 2 ? 'grid' : 'none';
 document.getElementById('keypad3Ring').style.display = keypadMode === 3 ? 'grid' : 'none';
 document.getElementById('keypad6RingColor').style.display = keypadMode === 4 ? 'grid' : 'none';
-updateToggleBtnText();
-updateDisplay();
+updateToggleBtnText(); updateDisplay();
 }
+
+function resetArrowIndex() {
+const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
+let nextEmpty = scores[archer][rambahanIdx].indexOf(null);
+currentArrowIndex = nextEmpty !== -1 ? nextEmpty : 0;
+}
+
+function selectArrowBox(index) { currentArrowIndex = index; updateDisplay(); }
 
 function addScore(val) {
 const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
+let rambahanData = scores[archer][rambahanIdx];
 
-if (scores[archer][rambahanIdx].length < maxArrows) {
-scores[archer][rambahanIdx].push(val);
+if (rambahanData[currentArrowIndex] !== null) {
+let nextEmpty = rambahanData.indexOf(null);
+if (nextEmpty !== -1) { currentArrowIndex = nextEmpty; } else { alert(t('alertFull')); return; }
+}
+
+rambahanData[currentArrowIndex] = val;
 saveData();
-updateDisplay();
 
-if (scores[archer][rambahanIdx].length === maxArrows) {
-setTimeout(() => {
-let msg = t('alertNoticeFull').replace('{r}', rambahanIdx + 1).replace('{a}', archer);
-alert(msg);
-}, 150);
-}
+let nextEmptyAfter = rambahanData.indexOf(null);
+if (nextEmptyAfter !== -1) {
+currentArrowIndex = nextEmptyAfter;
 } else {
-alert(t('alertFull'));
+setTimeout(() => { let msg = t('alertNoticeFull').replace('{r}', rambahanIdx + 1).replace('{a}', archer); alert(msg); }, 150);
 }
+updateDisplay();
 }
 
 function undoScore() {
 const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
-if (scores[archer][rambahanIdx].length > 0) { scores[archer][rambahanIdx].pop(); saveData(); updateDisplay(); }
+let rambahanData = scores[archer][rambahanIdx];
+
+if (rambahanData[currentArrowIndex] !== null) {
+rambahanData[currentArrowIndex] = null;
+} else {
+for (let i = maxArrows - 1; i >= 0; i--) {
+if (rambahanData[i] !== null) { rambahanData[i] = null; currentArrowIndex = i; break; }
+}
+}
+saveData(); updateDisplay();
 }
 
 function updateDisplay() {
 const archer = currentArcher; const rambahanIdx = parseInt(document.getElementById('rambahanSelect').value);
 const display = document.getElementById('arrowDisplay'); display.innerHTML = '';
 let currentTotal = 0;
+let rambahanData = scores[archer][rambahanIdx];
 
-scores[archer][rambahanIdx].forEach(val => {
+if (currentArrowIndex >= maxArrows) currentArrowIndex = 0;
+
+for (let i = 0; i < maxArrows; i++) {
+let val = rambahanData[i];
 let box = document.createElement('div');
 box.className = 'arrow-box';
-box.innerText = val;
+if (i === currentArrowIndex) box.classList.add('selected');
+box.onclick = () => selectArrowBox(i);
 
-// Render warna indikator khusus jika sedang di mode 3 Ring
+let label = document.createElement('span');
+label.className = 'arrow-label'; label.innerText = '#' + arrowSequence[i]; box.appendChild(label);
+
+let valDiv = document.createElement('div');
+valDiv.className = 'arrow-val'; valDiv.innerText = val !== null ? val : '';
+
+if (val !== null) {
 if (keypadMode === 3) {
 if (val === '3') { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
 else if (val === '2') { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
 else if (val === '1') { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
 else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
 }
-// Render warna indikator khusus untuk mode 6 Ring Warna
 else if (keypadMode === 4) {
 if (val === '6+' || val === '6') { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
 else if (val === '5') { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
@@ -542,7 +630,6 @@ else if (val === '3' || val === '2') { box.style.background = '#fff'; box.style.
 else if (val === '1') { box.style.background = '#00bfff'; box.style.color = '#000'; box.style.borderColor = '#00bfff'; }
 else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
 }
-// Render standar untuk mode lainnya
 else {
 if (['X', '10', '9'].includes(val)) { box.style.background = '#ffd700'; box.style.color = '#000'; box.style.borderColor = '#ffd700'; }
 else if (['8', '7'].includes(val)) { box.style.background = '#ff4c4c'; box.style.color = '#fff'; box.style.borderColor = '#ff4c4c'; }
@@ -552,24 +639,20 @@ else if (val === '2') { box.style.background = '#fff'; box.style.color = '#000';
 else if (val === '1') { box.style.background = 'var(--navy-blue)'; box.style.color = '#fff'; box.style.borderColor = 'var(--navy-blue)'; }
 else if (val === 'M') { box.style.background = '#555'; box.style.color = '#fff'; box.style.borderColor = '#555'; }
 }
+} else { box.style.background = 'transparent'; }
 
-display.appendChild(box);
-});
+box.appendChild(valDiv); display.appendChild(box);
+}
 
-scores[archer].forEach(rambahan => {
-rambahan.forEach(s => { currentTotal += calculateScoreValue(s); });
-});
-
+scores[archer].forEach(rambahan => { rambahan.forEach(s => { if(s !== null) currentTotal += calculateScoreValue(s); }); });
 document.getElementById('liveTotalScore').innerText = currentTotal;
-
-// Panggil fungsi update Live Leaderboard
 updateLiveLeaderboard();
 }
 
 function calculateScoreValue(val) {
 if (val === 'X') return 10;
 if (val === '6+') return 6;
-if (val === 'M') return 0;
+if (val === 'M' || val === null) return 0;
 return parseInt(val) || 0;
 }
 
@@ -577,23 +660,63 @@ function generateReportData() {
 let report = [];
 archers.forEach(archer => {
 let totalSkor = 0, totalX = 0;
-scores[archer].forEach(rambahan => { rambahan.forEach(s => { totalSkor += calculateScoreValue(s); if (s === 'X' || s === '6+') totalX++; }); });
+scores[archer].forEach(rambahan => { 
+rambahan.forEach(s => { 
+if (s !== null) { totalSkor += calculateScoreValue(s); if (s === 'X' || s === '6+') totalX++; }
+}); 
+});
 report.push({ name: archer, skor: totalSkor, x: totalX });
 });
 report.sort((a, b) => b.skor - a.skor || b.x - a.x); return report;
 }
 
-// FUNGSI UNTUK TOGGLE DETAIL LIVE SCORE
-function toggleLiveDetail(archerName) {
-if(expandedLiveArchers.has(archerName)) {
-expandedLiveArchers.delete(archerName);
-} else {
-expandedLiveArchers.add(archerName);
+// --- FUNGSI MENGHITUNG DAN RENDER PERFORMA ARROW ---
+function getArrowPerformanceHTML(archerName, matchScores, matchSeq) {
+let perf = {};
+matchSeq.forEach((arrNum, i) => { perf[i] = { total: 0, count: 0 }; });
+
+matchScores[archerName].forEach(rambahan => {
+rambahan.forEach((val, i) => {
+if (val !== null) {
+perf[i].total += calculateScoreValue(val);
+perf[i].count += 1;
 }
+});
+});
+
+let grouped = {};
+let hasAnyShot = false;
+for (let i in perf) {
+if (perf[i].count > 0) hasAnyShot = true;
+let s = perf[i].total;
+if (!grouped[s]) grouped[s] = [];
+grouped[s].push(matchSeq[i]);
+}
+
+if (!hasAnyShot) return '';
+
+let sortedScores = Object.keys(grouped).map(Number).sort((a,b) => b - a);
+let html = `<div style="margin-top: 15px; padding-top: 12px; border-top: 1px dashed var(--input-border);">
+<div class="perf-title">🎯 Analisis Performa Arrow:</div>`;
+
+sortedScores.forEach((score, idx) => {
+let arrowsStr = grouped[score].map(a => `#${a}`).join(', ');
+if (idx === 0) {
+html += `<div class="perf-rank-1">🏆 Total Poin ${score}: Arrow ${arrowsStr}</div><br>`;
+} else {
+html += `<div class="perf-rank-other">Total Poin ${score}: Arrow ${arrowsStr}</div>`;
+}
+});
+html += `</div>`;
+return html;
+}
+
+function toggleLiveDetail(archerName) {
+if(expandedLiveArchers.has(archerName)) { expandedLiveArchers.delete(archerName); } 
+else { expandedLiveArchers.add(archerName); }
 updateLiveLeaderboard();
 }
 
-// Fungsi Papan Skor Langsung (Update secara Real-time)
 function updateLiveLeaderboard() {
 const container = document.getElementById('liveLeaderboardContent');
 if (!container) return;
@@ -606,8 +729,6 @@ let activeClass = (data.name === currentArcher) ? 'active-archer' : '';
 let isExpanded = expandedLiveArchers.has(data.name);
 
 html += `<div class="live-item-wrapper">`;
-
-// Baris Utama
 html += `
 <div class="live-row ${activeClass}" onclick="toggleLiveDetail('${data.name}')">
 <div class="live-rank">#${index + 1}</div>
@@ -618,33 +739,58 @@ ${data.name}
 <div class="live-score-val">${data.skor} <span style="font-size:11px; font-weight:normal;">(X:${data.x})</span></div>
 </div>`;
 
-// Detail Container (Terbuka/Tertutup sesuai state)
 html += `<div class="live-detail-container ${isExpanded ? 'show' : ''}">`;
 
 let hasData = false;
 if (scores[data.name]) {
 scores[data.name].forEach((rambahan, rIdx) => {
-if (rambahan.length > 0) {
+let validScores = rambahan.filter(v => v !== null);
+if (validScores.length > 0) {
 hasData = true;
-let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+let subTotal = validScores.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+let detailStr = rambahan.map((v, i) => v !== null ? `[#${arrowSequence[i]}:${v}]` : '').filter(v => v).join(' ');
 html += `
 <div class="live-rambahan-item">
-<span><b>R${rIdx + 1}:</b> ${rambahan.join(', ')}</span>
+<span><b>R${rIdx + 1}:</b> ${detailStr}</span>
 <span><b>${subTotal}</b></span>
 </div>`;
 }
 });
+
+// Panggil fungsi Analisis Arrow di Live Score
+if (hasData) {
+html += getArrowPerformanceHTML(data.name, scores, arrowSequence);
+}
 }
 
-if (!hasData) {
-html += `<div style="text-align:center; color:#999; font-style:italic;">Belum ada tembakan</div>`;
-}
+if (!hasData) { html += `<div style="text-align:center; color:#999; font-style:italic;">Belum ada tembakan</div>`; }
 
-html += `</div>`; // End Detail Container
-html += `</div>`; // End Wrapper
+html += `</div></div>`; 
 });
-
 container.innerHTML = html;
+}
+
+// FUNGSI BANTU UNTUK WHATSAPP TEXT
+function getArrowPerformanceTextWA(archerName, matchScores, matchSeq) {
+let perf = {};
+matchSeq.forEach((arrNum, i) => { perf[i] = { total: 0, count: 0 }; });
+matchScores[archerName].forEach(rambahan => {
+rambahan.forEach((val, i) => { if (val !== null) { perf[i].total += calculateScoreValue(val); perf[i].count += 1; } });
+});
+let grouped = {}; let hasAnyShot = false;
+for (let i in perf) {
+if (perf[i].count > 0) hasAnyShot = true;
+let s = perf[i].total;
+if (!grouped[s]) grouped[s] = []; grouped[s].push(matchSeq[i]);
+}
+if (!hasAnyShot) return '';
+let sortedScores = Object.keys(grouped).map(Number).sort((a,b) => b - a);
+if (sortedScores.length > 0) {
+let topScore = sortedScores[0];
+let arrowsStr = grouped[topScore].map(a => `#${a}`).join(', ');
+return `🎯 *Best Arrow:* ${arrowsStr} (Total ${topScore} Poin)\n`;
+}
+return '';
 }
 
 function shareWhatsApp() {
@@ -653,12 +799,15 @@ let text = `${t('waTitle')}\n📍 Boyolali\n${t('waDate')} ${date}\n${t('waCateg
 archers.forEach(archer => {
 text += `🏹 *${archer}*\n`; let totalArcher = 0;
 scores[archer].forEach((rambahan, idx) => {
-if (rambahan.length > 0) {
-let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
-text += `R${idx + 1}: ${rambahan.join(', ')} (${subTotal})\n`; totalArcher += subTotal;
+let validScores = rambahan.filter(v => v !== null);
+if (validScores.length > 0) {
+let subTotal = validScores.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+let detailStr = rambahan.map((v, i) => v !== null ? `A${arrowSequence[i]}:${v}` : '').filter(v => v).join(', ');
+text += `R${idx + 1}: ${detailStr} (${subTotal})\n`; totalArcher += subTotal;
 }
 });
-text += `${t('waFinalScore')}${totalArcher}*\n\n`;
+text += `${t('waFinalScore')}${totalArcher}*\n`;
+text += getArrowPerformanceTextWA(archer, scores, arrowSequence) + `\n`;
 });
 text += `${t('waLeaderboard')}\n`;
 rankData.forEach((data, index) => { text += `#${index + 1} ${data.name} - ${data.skor} (X: ${data.x})\n`; });
@@ -672,18 +821,21 @@ let m = history[index];
 let text = `${t('waTitle')}\n📍 Boyolali\n${t('waDate')} ${m.date}\n${t('waCategory')} *${m.category}*\n${t('waDistance')} ${m.distance}m\n\n`;
 
 if(m.archers && m.scores) {
+let mSeq = m.arrowSequence || Array.from({length: 10}, (_, i) => (i + 1).toString());
 m.archers.forEach(archer => {
 text += `🏹 *${archer}*\n`; let totalArcher = 0;
 m.scores[archer].forEach((rambahan, idx) => {
-if (rambahan.length > 0) {
-let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
-text += `R${idx + 1}: ${rambahan.join(', ')} (${subTotal})\n`; totalArcher += subTotal;
+let validScores = rambahan.filter(v => v !== null);
+if (validScores.length > 0) {
+let subTotal = validScores.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+let detailStr = rambahan.map((v, i) => v !== null ? `A${mSeq[i] || i+1}:${v}` : '').filter(v => v).join(', ');
+text += `R${idx + 1}: ${detailStr} (${subTotal})\n`; totalArcher += subTotal;
 }
 });
-text += `${t('waFinalScore')}${totalArcher}*\n\n`;
+text += `${t('waFinalScore')}${totalArcher}*\n`;
+text += getArrowPerformanceTextWA(archer, m.scores, mSeq) + `\n`;
 });
 }
-
 text += `${t('waLeaderboard')}\n`;
 m.results.forEach((data, rankIndex) => { text += `#${rankIndex + 1} ${data.name} - ${data.skor} (X: ${data.x})\n`; });
 text += `\n${t('waCreatedBy')}`;
@@ -695,11 +847,7 @@ if(confirm(t('confirmFinish'))) {
 let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
 let matchData = {
 date: new Date().toLocaleString('id-ID', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute:'2-digit' }),
-category: selectedCategory,
-distance: distance,
-archers: archers,
-scores: scores,
-results: generateReportData()
+category: selectedCategory, distance: distance, archers: archers, scores: scores, arrowSequence: arrowSequence, results: generateReportData()
 };
 history.unshift(matchData);
 localStorage.setItem(historyKey, JSON.stringify(history));
@@ -715,36 +863,32 @@ document.getElementById('setup-section').style.display = 'none';
 document.getElementById('history-section').style.display = 'block';
 let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
 let html = '';
-if (history.length === 0) {
-html = `<p style="text-align:center; color: #888;">${t('historyEmpty')}</p>`;
-} else {
+if (history.length === 0) { html = `<p style="text-align:center; color: #888;">${t('historyEmpty')}</p>`; } 
+else {
 history.forEach((m, idx) => {
+let mSeq = m.arrowSequence || Array.from({length: 10}, (_, i) => (i + 1).toString());
 html += `<div class="history-item">
 <div style="display:flex; justify-content:space-between; align-items:flex-start;">
-<div>
-<div class="history-date">${m.date}</div>
-<div style="font-weight: bold; margin-bottom: 8px;">${m.category} - ${m.distance}m</div>
-</div>
+<div><div class="history-date">${m.date}</div><div style="font-weight: bold; margin-bottom: 8px;">${m.category} - ${m.distance}m</div></div>
 <button class="action-btn btn-gold" style="width:auto; margin:0; padding:6px 12px; font-size:12px;" onclick="shareWAHistory(${idx})">${t('btnShareWAHistory')}</button>
-</div>
-<ul style="margin: 0; padding-left: 20px; padding-top: 10px;">`;
+</div><ul style="margin: 0; padding-left: 20px; padding-top: 10px;">`;
 
 m.results.forEach((r, rankIdx) => {
 html += `<li style="margin-bottom: 8px;"><strong>#${rankIdx + 1}</strong> ${r.name}: Skor ${r.skor} (X: ${r.x})`;
-
 if (m.scores && m.scores[r.name]) {
 html += `<div class="history-detail">`;
 m.scores[r.name].forEach((rambahan, rIdx) => {
-if (rambahan.length > 0) {
-let subTotal = rambahan.reduce((sum, val) => sum + calculateScoreValue(val), 0);
-html += `<span><b>R${rIdx + 1}:</b> ${rambahan.join(', ')} (${subTotal})</span>`;
+let validScores = rambahan.filter(v => v !== null);
+if (validScores.length > 0) {
+let subTotal = validScores.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+let detailStr = rambahan.map((v, i) => v !== null ? `[#${mSeq[i] || i+1}:${v}]` : '').filter(v => v).join(' ');
+html += `<span><b>R${rIdx + 1}:</b> ${detailStr} (${subTotal})</span>`;
 }
 });
+// Render Analisis Arrow di Histori
+html += getArrowPerformanceHTML(r.name, m.scores, mSeq);
 html += `</div>`;
-} else {
-html += `<div class="history-detail"><i>(Data detail rambahan versi lawas)</i></div>`;
-}
-
+} 
 html += `</li>`;
 });
 html += `</ul></div>`;
@@ -766,91 +910,63 @@ let maxR = 0;
 history.forEach(m => {
 if(m.scores) {
 let archerNames = Object.keys(m.scores);
-if(archerNames.length > 0) {
-let rCount = m.scores[archerNames[0]].length;
-if(rCount > maxR) maxR = rCount;
-}
+if(archerNames.length > 0) { let rCount = m.scores[archerNames[0]].length; if(rCount > maxR) maxR = rCount; }
 }
 });
 
 let html = `
 <html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-<meta charset="utf-8" />
-</head>
+<head><meta charset="utf-8" /></head>
 <body style="font-family: Arial, sans-serif;">
 <table style="border-collapse: collapse; width: 100%;">
 <tr style="height: 45px;">
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Tanggal</th>
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Kategori</th>
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Jarak</th>
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Peringkat</th>
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Nama Pemanah</th>
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Skor Akhir</th>
-<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Total X</th>`;
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Tanggal</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Kategori</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Jarak</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Peringkat</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Nama Pemanah</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Skor Akhir</th>
+<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Total X</th>`;
 
-for(let i = 1; i <= maxR; i++) {
-html += `<th style="background-color: #0A1C3E; color: #D4AF37; font-weight: bold; border: 1px solid #000000; padding: 5px 15px; vertical-align: middle; text-align: center; white-space: nowrap;">Rambahan ${i}</th>`;
-}
+for(let i = 1; i <= maxR; i++) { html += `<th style="background-color: #0A1C3E; color: #D4AF37; border: 1px solid #000; padding: 5px 15px;">Rambahan ${i}</th>`; }
 html += `</tr>`;
 
 history.forEach((m, hIdx) => {
+let mSeq = m.arrowSequence || Array.from({length: 10}, (_, i) => (i + 1).toString());
 m.results.forEach((r, idx) => {
 let bgRow = (hIdx + idx) % 2 === 0 ? '#F9F9F9' : '#FFFFFF';
-let bgRank = '#E1E8ED';
-let bgScore = '#FFF3CD';
-
 html += `
 <tr style="height: 35px;">
-<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${m.date}</td>
-<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${m.category}</td>
-<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${m.distance}m</td>
-<td style="background-color: ${bgRank}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center; font-weight: bold;">#${idx + 1}</td>
-<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center; font-weight: bold;">${r.name}</td>
-<td style="background-color: ${bgScore}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center; font-weight: bold; color: #856404;">${r.skor}</td>
-<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${r.x}</td>`;
+<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">${m.date}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">${m.category}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">${m.distance}m</td>
+<td style="background-color: #E1E8ED; border: 1px solid #000; padding: 5px 10px; text-align: center; font-weight: bold;">#${idx + 1}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center; font-weight: bold;">${r.name}</td>
+<td style="background-color: #FFF3CD; border: 1px solid #000; padding: 5px 10px; text-align: center; font-weight: bold; color: #856404;">${r.skor}</td>
+<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">${r.x}</td>`;
 
 for(let i = 0; i < maxR; i++) {
 if (m.scores && m.scores[r.name] && m.scores[r.name][i]) {
-let arrowsStr = m.scores[r.name][i].join(', ');
-let subTotal = m.scores[r.name][i].reduce((sum, val) => sum + calculateScoreValue(val), 0);
-if (arrowsStr.length > 0) {
-html += `<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">${arrowsStr} <b>(${subTotal})</b></td>`;
-} else {
-html += `<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">-</td>`;
-}
-} else {
-html += `<td style="background-color: ${bgRow}; border: 1px solid #000000; padding: 5px 10px; vertical-align: middle; text-align: center;">-</td>`;
-}
+let validScores = m.scores[r.name][i].filter(v => v !== null);
+let subTotal = validScores.reduce((sum, val) => sum + calculateScoreValue(val), 0);
+if (validScores.length > 0) {
+let detailStr = m.scores[r.name][i].map((v, iSeq) => v !== null ? `A${mSeq[iSeq] || iSeq+1}:${v}` : '').filter(v => v).join(', ');
+html += `<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">${detailStr} <b>(${subTotal})</b></td>`;
+} else { html += `<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">-</td>`; }
+} else { html += `<td style="background-color: ${bgRow}; border: 1px solid #000; padding: 5px 10px; text-align: center;">-</td>`; }
 }
 html += `</tr>`;
 });
 });
-
 html += `</table></body></html>`;
 
 const blob = new Blob([html], { type: 'application/vnd.ms-excel' });
 const link = document.createElement("a");
 const url = URL.createObjectURL(blob);
-
 link.setAttribute("href", url);
 link.setAttribute("download", "Histori_Albirru_Archery.xls");
 link.style.visibility = 'hidden';
-
-document.body.appendChild(link);
-link.click();
-document.body.removeChild(link);
-}
-
-// Service Worker (PWA)
-if ('serviceWorker' in navigator) {
-window.addEventListener('load', () => {
-navigator.serviceWorker.register('sw.js').then(reg => {
-console.log('Service Worker terdaftar!', reg);
-}).catch(err => {
-console.log('Service Worker gagal', err);
-});
-});
+document.body.appendChild(link); link.click(); document.body.removeChild(link);
 }
 </script>
 </body>
