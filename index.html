@@ -128,15 +128,19 @@ body.dark-mode button.action-btn:hover { background-color: #163B85; }
 .btn-target-navy { background-color: var(--navy-blue) !important; color: #fff !important; }
 .btn-target-m { background-color: #555555 !important; color: #fff !important; }
 
-/* --- STYLE KOTAK ARROW --- */
-.arrow-display { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; min-height: 40px; padding: 12px; background: rgba(10, 28, 62, 0.05); border-radius: 10px; }
+/* --- STYLE KOTAK ARROW (DIPERBARUI AGAR LEBIH JELAS) --- */
+.arrow-display { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; min-height: 40px; padding: 15px; background: rgba(10, 28, 62, 0.05); border-radius: 10px; }
 body.dark-mode .arrow-display { background: rgba(255, 255, 255, 0.05); }
 
-.arrow-box { position: relative; background: var(--input-bg); border: 2px solid var(--input-border); width: 44px; height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; border-radius: 8px; color: var(--text-dark); cursor: pointer; transition: all 0.1s ease-in-out; }
-.arrow-box.selected { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); transform: scale(1.08); background-color: rgba(212, 175, 55, 0.1); }
-.arrow-label { position: absolute; top: 2px; left: 4px; font-size: 10px; color: #888; font-weight: 600; line-height: 1; }
-body.dark-mode .arrow-label { color: #aaa; }
-.arrow-val { margin-top: 6px; font-size: 16px; }
+/* Diperbesar dari 44px ke 52px */
+.arrow-box { position: relative; background: var(--input-bg); border: 2px solid var(--input-border); width: 52px; height: 52px; display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; border-radius: 8px; color: var(--text-dark); cursor: pointer; transition: all 0.1s ease-in-out; overflow: hidden; }
+.arrow-box.selected { border-color: var(--gold); box-shadow: 0 0 10px rgba(212, 175, 55, 0.6); transform: scale(1.08); background-color: rgba(212, 175, 55, 0.1); }
+
+/* Label Badge di sudut, sangat kontras */
+.arrow-label { position: absolute; top: 0; left: 0; font-size: 11px; color: #fff; background-color: var(--navy-blue); font-weight: bold; padding: 2px 6px; border-bottom-right-radius: 6px; line-height: 1.2; z-index: 2; box-shadow: 1px 1px 3px rgba(0,0,0,0.2); }
+body.dark-mode .arrow-label { background-color: var(--gold); color: #000; }
+
+.arrow-val { margin-top: 8px; font-size: 18px; z-index: 1; }
 
 .live-total { text-align: right; font-weight: bold; color: var(--navy-blue); margin-top: 15px; font-size: 16px; }
 body.dark-mode .live-total { color: var(--gold); }
@@ -235,7 +239,6 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <label data-i18n="labelRambahan">Jumlah Rambahan</label>
 <input type="number" id="rambahanInput" value="6" min="1">
 
-<!-- INPUT PEMANAH DINAMIS BARU -->
 <label data-i18n="labelArchers">Daftar Pemanah & Nomor Arrow</label>
 <div style="font-size: 11px; color: #666; margin-top: -5px; margin-bottom: 5px; line-height: 1.4;">
     Gunakan <b>=</b> jika nomor panah tiap orang berbeda. Bisa juga pisah koma biasa.<br>
@@ -258,6 +261,9 @@ footer { text-align: center; padding: 20px; background: var(--navy-blue); color:
 <div class="card">
 <h3 class="section-title" data-i18n="titleHistory">Histori Pertandingan</h3>
 <button class="action-btn btn-green" onclick="unduhExcel()" style="margin-top: 10px; width: 100%;" data-i18n="btnDownloadCSV">📊 Unduh Excel (Elegan)</button>
+<!-- TOMBOL RESET HISTORI BARU -->
+<button class="action-btn btn-red" onclick="resetAllHistory()" style="margin-top: 10px; width: 100%;" data-i18n="btnResetHistory">🗑️ Hapus Semua Histori</button>
+
 <div id="historyContent" style="margin-top: 20px;"></div>
 <button class="action-btn" onclick="hideHistory()" style="margin-top: 20px;" data-i18n="btnBackSettings">Kembali ke Pengaturan</button>
 </div>
@@ -369,6 +375,7 @@ labelDistance: "Jarak (meter)", placeholderDistance: "Contoh: 20",
 labelRambahan: "Jumlah Rambahan", labelArrows: "Jika tidak pakai '=' , berapa default panah per rambahan?",
 btnStart: "Mulai Skoring", btnViewHistory: "Lihat Histori Pertandingan",
 titleHistory: "Histori Pertandingan", btnDownloadCSV: "📊 Unduh Excel (Elegan)", btnBackSettings: "Kembali ke Pengaturan",
+btnResetHistory: "🗑️ Hapus Semua Histori", // Translate baru
 labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
 btnToggleKeypad: "Mode Keypad", btnUndo: "Hapus (Undo)", btnShareWA: "📱 Share WhatsApp (Detail)",
 btnFinishSave: "Selesai & Simpan Histori", btnDelete: "Hapus Tanpa Simpan", footerText: "Dibuat oleh Abu Zaid",
@@ -380,6 +387,7 @@ alertFull: "Semua arrow di rambahan ini sudah terisi!",
 alertNoticeFull: "Pemberitahuan: Rambahan {r} untuk {a} sudah terisi penuh!",
 confirmFinish: "Selesaikan pertandingan dan simpan hasil ke Histori?",
 confirmDelete: "Yakin ingin menghapus pertandingan ini TANPA menyimpan ke histori?",
+confirmResetHistory: "PERINGATAN! Anda yakin ingin menghapus SEMUA data histori pertandingan? Tindakan ini tidak bisa dibatalkan.", // Konfirmasi baru
 historyEmpty: "Belum ada histori pertandingan yang tersimpan.",
 csvNoData: "Belum ada data histori untuk diunduh.",
 
@@ -393,6 +401,7 @@ labelDistance: "Jarak (meter)", placeholderDistance: "Conto: 20",
 labelRambahan: "Cacahe Rambahan", labelArrows: "Yen ora nganggo '=' , pira default panah saben rambahan?",
 btnStart: "Miwiti Skoring", btnViewHistory: "Ndeleng Histori Pertandhingan",
 titleHistory: "Histori Pertandhingan", btnDownloadCSV: "📊 Undhuh Excel (Elegan)", btnBackSettings: "Bali menyang Pangaturan",
+btnResetHistory: "🗑️ Busak Kabeh Histori", // Translate baru
 labelCatDist: "Kategori & Jarak", labelArcher: "Pilih Pemanah", labelRambahanScoring: "Rambahan", labelScoreRambahan: "Skor Rambahan:",
 btnToggleKeypad: "Mode Keypad", btnUndo: "Busak (Undo)", btnShareWA: "📱 Bagikake WhatsApp (Detail)",
 btnFinishSave: "Rampung & Simpen Histori", btnDelete: "Busak Tanpa Simpen", footerText: "Digawe dening Abu Zaid",
@@ -404,6 +413,7 @@ alertFull: "Kabeh arrow ing rambahan iki wis kebak!",
 alertNoticeFull: "Pewara: Rambahan {r} kanggo {a} wis kebak!",
 confirmFinish: "Rampungake pertandhingan banjur simpen asile menyang Histori?",
 confirmDelete: "Yakin arep mbusak pertandhingan iki TANPA disimpen menyang histori?",
+confirmResetHistory: "PÈNGET! Yakin arep mbusak KABÈH data histori pertandhingan? Tindakan iki ora bisa dibatalake.", // Konfirmasi baru
 historyEmpty: "Durung ana histori pertandhingan sing disimpen.",
 csvNoData: "Durung ana data histori kanggo diundhuh.",
 
@@ -419,11 +429,10 @@ let currentArcher = "";
 let currentLang = 'id';
 let expandedLiveArchers = new Set(); 
 
-// arrowSequence SEKARANG BERUPA OBJECT (DICTIONARY)
 let arrowSequence = {}; 
 let currentArrowIndex = 0; 
 
-const storageKey = 'albirru_scoring_data_v4'; // Update versi agar tidak konflik dengan data sisa lama
+const storageKey = 'albirru_scoring_data_v4'; 
 const historyKey = 'albirru_match_history';
 
 window.onload = function() {
@@ -503,7 +512,6 @@ let lines = archersStrRaw.split('\n').map(l => l.trim()).filter(l => l !== '');
 
 lines.forEach(line => {
     if (line.includes('=')) {
-        // Mode Kustom per Pemanah: "Ali = 1, 3, 5"
         let parts = line.split('=');
         let name = parts[0].trim();
         let seq = parts[1].split(',').map(s => s.trim()).filter(s => s);
@@ -513,7 +521,6 @@ lines.forEach(line => {
             scores[name] = Array.from({length: maxRambahan}, () => new Array(seq.length).fill(null));
         }
     } else {
-        // Mode Biasa: "Ali, Umar" (Pakai koma standar)
         let names = line.split(',').map(s => s.trim()).filter(s => s);
         names.forEach(name => {
             archers.push(name);
@@ -631,7 +638,7 @@ box.className = 'arrow-box';
 if (i === currentArrowIndex) box.classList.add('selected');
 box.onclick = () => selectArrowBox(i);
 
-let label = document.createElement('span');
+let label = document.createElement('div');
 label.className = 'arrow-label'; label.innerText = '#' + seq[i]; box.appendChild(label);
 
 let valDiv = document.createElement('div');
@@ -837,14 +844,13 @@ text += `\n${t('waCreatedBy')}`;
 window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
-// Fungsi bantu untuk membaca versi data histori lawas / baru
 function getHistoryArrowSeq(m, archerName) {
     if (m.arrowSequence && !Array.isArray(m.arrowSequence) && m.arrowSequence[archerName]) {
-        return m.arrowSequence[archerName]; // Versi baru (Dictionary per archer)
+        return m.arrowSequence[archerName]; 
     } else if (m.arrowSequence && Array.isArray(m.arrowSequence)) {
-        return m.arrowSequence; // Versi lawas 1 (Array Global)
+        return m.arrowSequence; 
     } else if (m.scores && m.scores[archerName] && m.scores[archerName][0]) {
-        return Array.from({length: m.scores[archerName][0].length}, (_, i) => (i + 1).toString()); // Fallback
+        return Array.from({length: m.scores[archerName][0].length}, (_, i) => (i + 1).toString()); 
     }
     return ['1','2','3'];
 }
@@ -891,6 +897,19 @@ location.reload();
 }
 
 function resetMatch() { if(confirm(t('confirmDelete'))) { localStorage.removeItem(storageKey); location.reload(); } }
+
+// --- FUNGSI RESET SEMUA HISTORI ---
+function resetAllHistory() {
+    let history = JSON.parse(localStorage.getItem(historyKey) || '[]');
+    if (history.length === 0) {
+        alert(t('csvNoData'));
+        return;
+    }
+    if (confirm(t('confirmResetHistory'))) {
+        localStorage.removeItem(historyKey);
+        showHistory(); // Refresh tampilan
+    }
+}
 
 function showHistory() {
 document.getElementById('setup-section').style.display = 'none';
